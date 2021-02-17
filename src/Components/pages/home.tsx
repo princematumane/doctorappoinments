@@ -10,8 +10,10 @@ interface Props {match: { params: { id: string } } }
 interface State { doctors:Doctors[] }
 
 
-let sampleData = [{name:'prince',surname:'matumane',specialiazation:'mmmmmm' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:23 , description:'vvvvvv'}
-,{name:'rr',surname:'matumane',specialiazation:'ssss' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'}]
+let sampleData = [{name:'tumelo',surname:'moremi',specialiazation:'dentist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:23 , description:'vvvvvv'}
+,{name:'ranko',surname:'alpha',specialiazation:'gynaccologist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'},
+{name:'molemi',surname:'omega',specialiazation:'medical' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'},
+{name:'philips',surname:'marnwel',specialiazation:'dentist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'}]
 
 const Maincontainter = styled.div`
     .center{
