@@ -3,7 +3,6 @@ import * as React from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Route, Link, NavLink, Switch } from "react-router-dom";
 import { Navbar } from "./Components/Navbar";
-import { ViewIdea } from "./Components/viewIdea";
 import { GlobalStyles, themeList } from "./themes";
 import { ThemeProvider } from 'styled-components';
 import { hot } from 'react-hot-loader/root'
@@ -37,7 +36,7 @@ class App extends React.Component<Props, State> {
 
             return (
                 <div>
-                    <ThemeProvider theme={themeList[1]}>
+                    <ThemeProvider theme={themeList[0]}>
                         <GlobalStyles />
                         <BrowserRouter>
                             <Navbar/>

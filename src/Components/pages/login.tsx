@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { api } from '../../api/api';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
 
@@ -41,14 +42,18 @@ export const Panel = styled.div`
 interface State {
     mode: string,
     username: string,
-    password: string
+    password: string,
+    status:boolean,
+    message:string
 }
 
 export class Login extends React.Component {
     state: State = {
         mode: 'login',
         username: '',
-        password: ''
+        password: '',
+        status:false,
+        message:''
     }
 
     componentDidMount() {}
@@ -68,6 +73,11 @@ export class Login extends React.Component {
                     <Button style={{ width: '102%' }} text='Login' onClick={() => {
                         window.location.href = "/";
                         //api call for login
+                        api.Login(this.state.username , this.state.password).then((response:any) =>{
+                            this.setState({status:response.status} , () =>{
+                                this.setState({message:response.message});
+                            })
+                        })
                     }} />
                     <a onClick = {() =>{
                         window.location.href = "/register"

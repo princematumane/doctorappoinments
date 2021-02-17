@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "./dashboard/button";
+import { api } from '../api/api';
 interface State {
     userNameLogged: string
 }
@@ -76,6 +77,7 @@ export class Navbar extends React.Component<Props, State> {
         super(Props);
     }
     componentDidMount(): void {
+        this.setState({userNameLogged:(api.loggedUserInfo.name != '')?api.loggedUserInfo.name:'login'})
     }
     componentWillMount(): void {
     }
@@ -94,11 +96,16 @@ export class Navbar extends React.Component<Props, State> {
                     {this.logo()}
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
-                    <Button roundimg={''} text={this.state.userNameLogged} onClick={() => {
-                        window.location.href = '/';
+                    {(this.state.userNameLogged == 'login')?
+                     <Button roundimg={''} text={this.state.userNameLogged} onClick={() => {
+                        window.location.href = '/Login';
                     }} />
+                    :
+                    <Button roundimg={''} text={this.state.userNameLogged} onClick={() => {
+                        alert("already logged");
+                    }} />}
                     <div style={{ flex: 0, whiteSpace: 'nowrap', paddingLeft: 13 }}>
-                        <a className='navbuttons navbuttonRed' href='#' onClick={() => { }}><i style={{ marginTop: '10px' }} className='Prince'></i></a>
+                        <a className='navbuttons navbuttonRed' href='#' onClick={() => { }}><i style={{ marginTop: '10px' }} className=''></i></a>
                     </div>
                 </div>
             </NavbarMainContainer>

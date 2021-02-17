@@ -36,12 +36,12 @@ export const themeProperties = [
 
 export const lightTheme: ThemeDefinition = {
   name: 'light',
-  body: '#fff',
+  body: '#1fcdd6',
   bodyAlt: '#fff',
   bodyAltLighter: '#fff',
   text: '#8E8B8B',
   toggleBorder: '#f00',
-  gradient: 'linear-gradient(#39598A, #79D7ED)',
+  gradient: 'linear-gradient(#1fcdd6,#8E8B8B)',
   bgSpot: '#D4D4D4',
   brandSpot: '#E64039',
   focusColor: '#343539',

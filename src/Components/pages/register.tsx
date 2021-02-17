@@ -1,7 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { api } from '../../api/api';
+import { Patient } from '../../api/model/Interface';
+import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
+import { Select } from '../dashboard/select';
+import { Dropdown, DropdownInterface } from '../select/dropdown';
 
 
 
@@ -39,48 +44,94 @@ export const Panel = styled.div`
 `;
 
 interface State {
-    mode: string,
-    username: string,
-    password: string
+    personDetails: Patient,
+    status: boolean,
+    message: string
 }
 
+
 export class Register extends React.Component {
+
+    tempPersonDetails: Patient ={
+        address: "",
+        email:"",
+        firstName:'',
+        gender:'',
+        idNumber:0,
+        lastName:'',
+        password:'',
+        phoneNumber:'',
+        picture:"",
+        surname:'',
+    }
+    genderOptions : DropdownInterface[] = [{value:'male',option:'Male'} , {value:'female',option:'Female'}];
     state: State = {
-        mode: 'login',
-        username: '',
-        password: ''
+        personDetails: this.tempPersonDetails,
+        status:false,
+        message:''
     }
 
-    componentDidMount() {}
+
+    componentDidMount() {
+        
+    }
     logginPanel() {
             return (
                 <>
-                <h1>Register</h1>
+                <h1>Create file</h1>
+                    <span>first Name</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,firstName:e.target.value}})
+                    }} />
+                          <span>Last Name</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,lastName:e.target.value}})
+                    }} />
+                          <span>surname</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,surname:e.target.value}})
+                    }} />
+                               <span>ID Number</span>
+                    <Input type={'number'} onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,idNumber:e.target.value}})
+                    }} />
+                          <span>Phone Number</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,phoneNumber:e.target.value}})
+                    }} />
+                               <span>email</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,email:e.target.value}})
+                    }} />
+                                                <span>Address</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,address:e.target.value}})
+                    }} />
+                                                 <span>Password</span>
+                    <Input onChange = {(e:any) =>{
+                        this.setState({personDetails:{...this.state.personDetails,password:e.target.value}})
+                    }} />
+                       
+                          <span>gender</span>
+                          <div >
+                          <Dropdown dataOptions={this.genderOptions} onChange={(e:any) =>{
+                                this.setState({personDetails:{...this.state.personDetails,gender:e}})
+                          }}/>
+                          </div>
+                    
+                    <br/>
+                    {(this.state.message != "")? <span style={{color:(this.state.status == true)?"green":"red"}}>{this.state.message}</span>: null}
+                    <Button style={{ width: '102%' }} text='Create File' onClick={() => {
+                        console.log(this.state.personDetails)
+                        api.AddPatient(this.state.personDetails , (success) =>{
+                            console.log(success);
+                            // this.setState({status:success.status} , () =>{
+                            //     this.setState({message:success.message})
+                            // }
+                            
+                        } ,  err =>{
 
-                    <span>name</span>
-                    <Input />
-                    <span>surname</span>
-                    <Input/>
-                    <span>idnumber</span>
-                    <Input type='number' ></Input>
-                    <span>address</span>
-                    <Input></Input>
-                    <span>discription</span>
-                    <Input></Input>
-                    <span>hospital</span>
-                    <Input></Input>
-                    <span>contact</span>
-                    <Input type='number'></Input>
-
-                        <span>Password</span>
-                    <Input type={'password'} onChange={(e) =>{
-                        this.setState({password : e.target.value} , () =>{
-                            console.log(this.state.password)
-                        });
-                    }}/><br/>
-                    <Button style={{ width: '102%' }} text='Login' onClick={() => {
-                        window.open('/');
-                        //api call for login
+                        })
                     }} />
                     
                   </>
@@ -91,9 +142,9 @@ export class Register extends React.Component {
         return (
             <MainContainer>
                 <Panel>
-                <div style={{justifyContent:'center', alignContent:'center',alignSelf:'center',textAlign:'center'}}>
+                {/* <div style={{justifyContent:'center', alignContent:'center',alignSelf:'center',textAlign:'center'}}>
                         <img src='/logo.png' style={{width:'150px' , height:'150px' }}/>
-                    </div>
+                    </div> */}
                     {this.logginPanel()}
                 </Panel>
             </MainContainer>
