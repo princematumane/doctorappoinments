@@ -6,7 +6,7 @@ import { CloudAppResponse, Doctor, Patient, userInfo } from "./model/Interface";
 
 
 export class API extends EventEmitter {
-    hostURL: string = "https://localhost:44348";
+    hostURL: string = "https://doctorappoinmentsapi20210218230626.azurewebsites.net";
     bearerToken: string ="";
     headers: any = { 'Content-Type': 'application/json' };
 
