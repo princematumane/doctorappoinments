@@ -9,6 +9,7 @@ import { hot } from 'react-hot-loader/root'
 import { Home } from "./Components/pages/home";
 import { Login } from "./Components/pages/login";
 import { Register } from "./Components/pages/register";
+import { api } from "./api/api";
 
 interface Props { }
 interface State {
@@ -23,6 +24,7 @@ class App extends React.Component<Props, State> {
 
     constructor(props: any) {
         super(props)
+        api.loadUserInfo();
     }
 
     componentDidMount() {
@@ -41,7 +43,7 @@ class App extends React.Component<Props, State> {
                         <BrowserRouter>
                             <Navbar/>
                             <Switch>
-                                <Route exact path='/' component={Home}>
+                                <Route exact path='/' component={Login}>
                                 </Route>
                                 <Route exact path='/home' component={Home}/>
                                 <Route exact path='/login' component={Login}/>

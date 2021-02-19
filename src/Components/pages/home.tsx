@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { api } from '../../api/api';
 import { Input } from '../dashboard/input';
 import { Doctors } from '../dashboard/interfaces';
 
@@ -8,12 +9,6 @@ import { Doctors } from '../dashboard/interfaces';
 interface Props {match: { params: { id: string } } }
 
 interface State { doctors:Doctors[] }
-
-
-let sampleData = [{name:'tumelo',surname:'moremi',specialiazation:'dentist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:23 , description:'vvvvvv'}
-,{name:'ranko',surname:'alpha',specialiazation:'gynaccologist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'},
-{name:'molemi',surname:'omega',specialiazation:'medical' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'},
-{name:'philips',surname:'marnwel',specialiazation:'dentist' , picture:'https://cdn.dribbble.com/users/3821225/screenshots/14390380/media/61d3ef3d841b85a055fc3fa2bb8043d2.png' , age:25, description:'vvvvvv'}]
 
 const Maincontainter = styled.div`
     .center{
@@ -68,10 +63,14 @@ const Maincontainter = styled.div`
 export  class Home extends React.Component<Props, State> {
     constructor(props: any) {
         super(props)
-        this.state = {doctors : sampleData}
+        this.state = {doctors : []}
     }
 
     componentDidMount() {
+        api.getAllDoctors().then((data) =>{
+            console.log(data)
+            this.setState({doctors:data.data})
+        })
         document.title = 'Home';
         console.log('props' ,this.props)
     }
@@ -100,6 +99,7 @@ export  class Home extends React.Component<Props, State> {
                         </div>
                                 <div className={"membersListing"}>
                                     <div style={{display:'inline-flex' ,  width:'100%'}}>
+                                    {(this.state.doctors)? 
                                         <table>
                                             <thead>
                                                 <th></th>
@@ -108,6 +108,7 @@ export  class Home extends React.Component<Props, State> {
                                                 <th>Specialiazation</th>
                                             </thead>
                                             <tbody>
+
                                                 {(this.state.doctors.map((data,i) =>{
                                                     return <tr key={i+ JSON.stringify(data)}>
                                                                 <td> 
@@ -115,11 +116,12 @@ export  class Home extends React.Component<Props, State> {
                                                                 </td>
                                                                 <td>{data.name}</td>
                                                                 <td>{data.surname}</td>
-                                                                <td>{data.specialiazation}</td>
+                                                                <td>{data.specialiazation[0]}</td>
                                                             </tr>
                                                 }))}
                                             </tbody>
                                         </table>
+                                        : <span>No doctors</span>}
                                     </div>
                                 </div>
 

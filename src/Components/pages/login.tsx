@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
+import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
 
@@ -70,12 +71,24 @@ export class Login extends React.Component {
                             console.log(this.state.password)
                         });
                     }}/><br/>
+                    
+                    {(this.state.message != '') ? 
+                    <div style={{padding:10 , borderRadius:5 , backgroundColor:(this.state.status == true)?'green':'red'}}>
+                        <span style={{color:'white'}}>{this.state.message}</span>
+                    </div>
+                    : null }
+
                     <Button style={{ width: '102%' }} text='Login' onClick={() => {
-                        window.location.href = "/";
                         //api call for login
                         api.Login(this.state.username , this.state.password).then((response:any) =>{
                             this.setState({status:response.status} , () =>{
                                 this.setState({message:response.message});
+                                if(this.state.status){
+                                    api.storeUserInfo(response.data).then(() =>{
+                                        window.location.href = "/home";
+                                    })
+                                      
+                                }
                             })
                         })
                     }} />

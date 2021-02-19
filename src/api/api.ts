@@ -20,18 +20,25 @@ export class API extends EventEmitter {
 loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
   constructor() {
     super();
+    setInterval(() =>{
+      api.loadUserInfo();
+  } , 5000)
   }
 
   loadUserInfo = async () => {
     let userInfo = await localStorage.getItem('userInfo')
     if (userInfo) {
-      if ((userInfo)) { this.loggedUserInfo = JSON.parse(userInfo); }
+      if ((userInfo)) {
+         this.loggedUserInfo = JSON.parse(userInfo);
+         this.bearerToken = this.loggedUserInfo.jwt;
+         }
     }
   }
 
   storeUserInfo = async (userInfo: userInfo) => {
-    let store = {}
+    let store = userInfo;
     if (userInfo.jwt.length > 10) { 
+      api.emit("userInfo" , userInfo);
         this.loggedUserInfo = userInfo;
         this.bearerToken = this.loggedUserInfo.jwt;
         await localStorage.setItem('userInfo', JSON.stringify(store));
@@ -41,16 +48,19 @@ loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
   }
   logOut = async() =>{
     await localStorage.removeItem('userInfo');
+    this.loggedUserInfo = this.tempLoggedUserInfo;
   }
 
   async getAllDoctors(): Promise<CloudAppResponse<any>> {
+    console.log(this.bearerToken);
     return await fetch(api.hostURL + '/api/Doctors/getAll', {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer ' + api.bearerToken,
+        Authorization: 'Bearer ' + this.bearerToken,
         'Content-Type': 'application/json'
       }
     }).then(res => res.json()).then(data => {
+      console.log(data);
       return data
     }).catch((err) => {
       return err
@@ -194,6 +204,7 @@ loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
         'Content-Type': 'application/json'
       }
     }).then(res => res.json()).then(data => {
+      console.log(data,"in login")
       return data
     }).catch(err => {
       return err

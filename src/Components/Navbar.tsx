@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "./dashboard/button";
 import { api } from '../api/api';
+import { userInfo } from '../api/model/Interface';
+import { theme8bo } from '../themes';
 interface State {
     userNameLogged: string
 }
@@ -71,13 +73,21 @@ const NavbarMainContainer = styled.div`
 export class Navbar extends React.Component<Props, State> {
 
     state: State = {
-        userNameLogged: 'Prince'
+        userNameLogged: 'login'
     }
     constructor(Props: Props) {
         super(Props);
     }
     componentDidMount(): void {
-        this.setState({userNameLogged:(api.loggedUserInfo.name != '')?api.loggedUserInfo.name:'login'})
+        api.on("userInfo" , (data:userInfo) =>{
+            this.setState({userNameLogged:data.name})
+        })
+        var loggedInfo = localStorage.getItem("userInfo");
+        if(loggedInfo){
+            var info = JSON.parse(loggedInfo);
+            api.storeUserInfo(info);
+            this.setState({userNameLogged:info.name});
+        }
     }
     componentWillMount(): void {
     }
@@ -101,9 +111,14 @@ export class Navbar extends React.Component<Props, State> {
                         window.location.href = '/Login';
                     }} />
                     :
-                    <Button roundimg={''} text={this.state.userNameLogged} onClick={() => {
-                        alert("already logged");
-                    }} />}
+                    <>
+                    <span style={{color:theme8bo.focusColor}}>{this.state.userNameLogged}</span>
+                    <Button text={'log out'} onClick={() =>{
+                        api.logOut();
+                        this.setState({userNameLogged:'login'})
+                    }}/>
+                    </>
+                    }
                     <div style={{ flex: 0, whiteSpace: 'nowrap', paddingLeft: 13 }}>
                         <a className='navbuttons navbuttonRed' href='#' onClick={() => { }}><i style={{ marginTop: '10px' }} className=''></i></a>
                     </div>

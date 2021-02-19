@@ -120,14 +120,21 @@ export class Register extends React.Component {
                           </div>
                     
                     <br/>
-                    {(this.state.message != "")? <span style={{color:(this.state.status == true)?"green":"red"}}>{this.state.message}</span>: null}
+                    {(this.state.message != '') ? 
+                    <div style={{padding:10 , borderRadius:5 , backgroundColor:(this.state.status == true)?'green':'red'}}>
+                        <span style={{color:'white'}}>{this.state.message}</span>
+                    </div>
+                    : null }
                     <Button style={{ width: '102%' }} text='Create File' onClick={() => {
                         console.log(this.state.personDetails)
                         api.AddPatient(this.state.personDetails , (success) =>{
                             console.log(success);
-                            // this.setState({status:success.status} , () =>{
-                            //     this.setState({message:success.message})
-                            // }
+                            this.setState({status:success.status} , () =>{
+                                this.setState({message:success.message})
+                                if(this.state.status){
+                                    window.location.href = "/login";
+                                }
+                            })
                             
                         } ,  err =>{
 
