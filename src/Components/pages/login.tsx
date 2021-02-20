@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
+import { userInfo } from '../../api/model/Interface';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -59,7 +60,19 @@ export class Login extends React.Component {
         message: ''
     }
 
-    componentDidMount() { }
+    componentDidMount() {
+
+        api.on("userInfo" , (data:userInfo) =>{
+            window.location.href ='/home'
+        })
+        var loggedInfo = localStorage.getItem("userInfo");
+        if(loggedInfo){
+            var info = JSON.parse(loggedInfo);
+            if(info.jwt){
+                window.location.href ='/home';
+            }
+        }
+     }
     logginPanel() {
         return (
             <>
