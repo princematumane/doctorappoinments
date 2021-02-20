@@ -122,7 +122,10 @@ export class Home extends React.Component<Props, State> {
                     {(this.state.isBookingAppointment) ? <div style={{width:'50%'}}>
                         <Modal onChange = {() =>{
                             this.setState({isBookingAppointment:false});
-                        }}id={this.state.doctor.firstName} isOpen={this.state.isBookingAppointment} title={'Book your appointment with '+ this.state.doctor.firstName}/>
+                        }}id={this.state.doctor.firstName} isOpen={this.state.isBookingAppointment} title={'Book your appointment with '+ this.state.doctor.firstName}>
+                            <a>To fill booking details....</a>
+
+                        </Modal>
                          </div> : null}
                     <div className={"membersListing"}>
                         <div style={{ display: 'inline-flex', width: '100%' }}>
