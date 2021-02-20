@@ -56,7 +56,7 @@ const ButtonStyled = styled.button<ButtonStyleProps>`
   `};
 
   :hover  {
-    color: ${({ theme }) => theme.body};
+    color: ${({ theme }) => theme.text};
     background: ${({ theme }) => theme.focusColor};
     cursor: pointer;
   }
@@ -76,7 +76,7 @@ const ButtonStyled = styled.button<ButtonStyleProps>`
 
   div.buttonText {
     flex:1;
-      padding: ${({ theme }) => theme.padding};
+      padding:10px ;
   }
 `
 

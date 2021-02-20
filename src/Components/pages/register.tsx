@@ -11,19 +11,19 @@ import { Dropdown, DropdownInterface } from '../select/dropdown';
 
 
  const MainContainer = styled.div`
-    background: ${({ theme }) => theme.bodyAlt};
+    background: ${({ theme }) => theme.gradient};
     top:0;
     bottom:0;
     left:0;
     right:0;
     position: absolute;
-    min-height: 1500;
+    min-height: 110%;
 `;
 
 export const Panel = styled.div`
     margin-top: 50px;
-    background: ${({ theme }) => theme.bodyAltLighter};
-    max-width: 400px;
+    background: ${({ theme }) => theme.gradient};
+    max-width: 40%;
     width: 100%;
     margin: 0px auto;
     padding: 40px;
@@ -78,7 +78,10 @@ export class Register extends React.Component {
     logginPanel() {
             return (
                 <>
-                <h1>Create file</h1>
+                <a style={{fontWeight:"bold", color:'#000'}} onClick={() =>{
+                    window.location.href = "/login";
+                }}> {'<< '}Login</a>
+                <h1 style={{textAlign:'center'}}>Create your file</h1>
                     <span>first Name</span>
                     <Input onChange = {(e:any) =>{
                         this.setState({personDetails:{...this.state.personDetails,firstName:e.target.value}})
@@ -114,7 +117,7 @@ export class Register extends React.Component {
                        
                           <span>gender</span>
                           <div >
-                          <Dropdown dataOptions={this.genderOptions} onChange={(e:any) =>{
+                          <Dropdown style={{width:"100%"}} dataOptions={this.genderOptions} onChange={(e:any) =>{
                                 this.setState({personDetails:{...this.state.personDetails,gender:e}})
                           }}/>
                           </div>
@@ -136,9 +139,7 @@ export class Register extends React.Component {
                                 }
                             })
                             
-                        } ,  err =>{
-
-                        })
+                        } ,  err =>{})
                     }} />
                     
                   </>

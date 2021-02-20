@@ -3,9 +3,9 @@ export interface User {
 }
 
 export interface Doctors{
-    name: string , 
+    firstName: string , 
     surname:string , 
-    specialiazation:string,
+    specialiazation:string[],
     picture:string,
     age:number,
     contact?:Contact,

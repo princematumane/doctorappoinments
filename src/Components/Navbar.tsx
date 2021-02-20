@@ -5,8 +5,10 @@ import { Button } from "./dashboard/button";
 import { api } from '../api/api';
 import { userInfo } from '../api/model/Interface';
 import { theme8bo } from '../themes';
+import { UserInfo } from 'os';
 interface State {
-    userNameLogged: string
+    userLogged: userInfo,
+    menuButtonOpen: boolean,
 }
 interface Props { }
 
@@ -51,8 +53,6 @@ const NavbarMainContainer = styled.div`
         margin-right: 20px;
         right:0px;
     }
-    border-top-left-radius: ${({ theme }) => theme.radius};
-    border-top-right-radius: ${({ theme }) => theme.radius};
     
      .navbuttons {
         padding: 12px 10px;
@@ -69,33 +69,121 @@ const NavbarMainContainer = styled.div`
         color: ${({ theme }) => theme.brandSpot};
     }
 `;
+const UserProfileDiv = styled.div`
+    padding: 20px;
 
+    #profileInfoFlex {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #imageUrl {
+        width: 68px;
+        height: 68px;
+    }
+
+    #givenName {
+        font-weight: bold;
+        color: ${({ theme }) => theme.focusColor};
+    }
+
+    #familyName {
+
+    }
+
+    #imageHolder {
+        width: 68px;
+        height: 68px;
+        overflow: hidden;
+        border-radius : ${({ theme }) => theme.radius};
+    }
+
+    #profileData {
+        flex: 1;
+        padding-left: 20px;
+    }
+`;
+const MenuPanel = styled.div`
+    position: absolute;
+    top: 50px;
+    right: 0px;
+    min-width: 300px;
+    background: ${({ theme }) => theme.body};
+    border: 2px solid ${({ theme }) => theme.bodyAltLighter};
+    color: ${({ theme }) => theme.text};
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 2px;
+    padding-bottom: 0;
+    z-index: 1000;
+    #center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -50px;
+        margin-left: -50px;
+        width: 100px;
+        height: 100px;
+        background:'red';
+    }​
+    hr{
+        display: block;
+        margin-before: 0.5em;
+        margin-after: 0.5em;
+        margin-start: auto;
+        margin-end: auto;
+        overflow:hidden;
+        border-style: inset;
+        border-width: 1px;
+     }
+`;
 export class Navbar extends React.Component<Props, State> {
 
-    state: State = {
-        userNameLogged: 'login'
+    tempUserLogged:userInfo =  {
+        name:'Login',
+        jwt :'',
+        idNumber:0,
+        surname:''
     }
+    state: State = {
+        userLogged:this.tempUserLogged,
+        menuButtonOpen: false,
+    }
+
+    private wrapperMenu: any;
     constructor(Props: Props) {
         super(Props);
+        this.setWrapperMenu = this.setWrapperMenu.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     componentDidMount(): void {
         api.on("userInfo" , (data:userInfo) =>{
-            this.setState({userNameLogged:data.name})
+            this.setState({userLogged:data})
         })
         var loggedInfo = localStorage.getItem("userInfo");
         if(loggedInfo){
             var info = JSON.parse(loggedInfo);
             api.storeUserInfo(info);
-            this.setState({userNameLogged:info.name});
+            this.setState({userLogged:info});
         }
     }
     componentWillMount(): void {
     }
-
+    setWrapperMenu(menu:any) {
+        this.wrapperMenu = menu;
+    }
+    handleClickOutside(event:any) {
+        if (this.wrapperMenu && !this.wrapperMenu.contains(event.target)) {
+           
+        }
+       this.state.menuButtonOpen ? this.setState({menuButtonOpen: false}) : this.setState({});
+    }
     logo() {
         return <div className='logoContainer'>
             <Logo to='/'>
-                <img src='/logo192.png' height='80px' />
+                <img src='/logo.png' height='80px' />
             </Logo>
         </div >
     }
@@ -106,17 +194,33 @@ export class Navbar extends React.Component<Props, State> {
                     {this.logo()}
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
-                    {(this.state.userNameLogged == 'login')?
-                     <Button roundimg={''} text={this.state.userNameLogged} onClick={() => {
+                    {(this.state.userLogged.name == 'login')?
+                     <Button roundimg={''} text={this.state.userLogged.name} onClick={() => {
                         window.location.href = '/Login';
                     }} />
                     :
                     <>
-                    <span style={{color:theme8bo.focusColor}}>{this.state.userNameLogged}</span>
-                    <Button text={'log out'} onClick={() =>{
-                        api.logOut();
-                        this.setState({userNameLogged:'login'})
+                    <Button text={this.state.userLogged.name} onClick={() =>{
+                          this.setState({
+                            menuButtonOpen: !this.state.menuButtonOpen
+                        });
+                       // this.setState({userNameLogged:'login'})
                     }}/>
+
+                    {(this.state.menuButtonOpen)? <MenuPanel>
+                        {(this.state.userLogged)? <UserProfileDiv>
+                            <span>Name : {this.state.userLogged.name}</span><br/>
+                            <span>Surname : {this.state.userLogged.surname}</span><br/>
+                            <span>Id Number : {this.state.userLogged.idNumber}</span><br/>
+                            <Button text={'Log Out'} onClick={() =>{
+                                api.logOut();
+                                this.setState({userLogged: this.tempUserLogged}, () =>{
+                                    window.location.href = '/login'
+                                })
+                            }} />
+                        </UserProfileDiv> : <a>No data</a>}
+                    </MenuPanel> : null}
+
                     </>
                     }
                     <div style={{ flex: 0, whiteSpace: 'nowrap', paddingLeft: 13 }}>

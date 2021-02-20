@@ -7,8 +7,8 @@ import { Input } from '../dashboard/input';
 
 
 
- const MainContainer = styled.div`
-    background: ${({ theme }) => theme.bodyAlt};
+const MainContainer = styled.div`
+    background: ${({ theme }) => theme.gradient};
     top:0;
     bottom:0;
     left:0;
@@ -19,7 +19,7 @@ import { Input } from '../dashboard/input';
 
 export const Panel = styled.div`
     margin-top: 50px;
-    background: ${({ theme }) => theme.bodyAltLighter};
+    background: ${({ theme }) => theme.gradient};
     max-width: 400px;
     width: 100%;
     margin: 0px auto;
@@ -32,11 +32,13 @@ export const Panel = styled.div`
         height:40px;
     }
     Button{
-        margin-top: 10px;
+        margin-top: 20px;
         height:40px;
+        display:inline;
+        width:100%;
     }
     Button:Hover{
-        background:#7cccbe;
+        background:${({ theme }) => theme.focusColor};
     }
 `;
 
@@ -44,8 +46,8 @@ interface State {
     mode: string,
     username: string,
     password: string,
-    status:boolean,
-    message:string
+    status: boolean,
+    message: string
 }
 
 export class Login extends React.Component {
@@ -53,60 +55,64 @@ export class Login extends React.Component {
         mode: 'login',
         username: '',
         password: '',
-        status:false,
-        message:''
+        status: false,
+        message: ''
     }
 
-    componentDidMount() {}
+    componentDidMount() { }
     logginPanel() {
-            return (
-                <>
-                    <span>Username</span>
-                    <Input onChange={(e) =>{
-                        this.setState({username : e.target.value});
-                    }}/>
-                        <span>Password</span>
-                    <Input type={'password'} onChange={(e) =>{
-                        this.setState({password : e.target.value} , () =>{
-                            console.log(this.state.password)
-                        });
-                    }}/><br/>
-                    
-                    {(this.state.message != '') ? 
-                    <div style={{padding:10 , borderRadius:5 , backgroundColor:(this.state.status == true)?'green':'red'}}>
-                        <span style={{color:'white'}}>{this.state.message}</span>
-                    </div>
-                    : null }
+        return (
+            <>
+                <span>Id Number</span>
+                <Input onChange={(e) => {
+                    this.setState({ username: e.target.value });
+                }} />
+                <span>Password</span>
+                <Input type={'password'} onChange={(e) => {
+                    this.setState({ password: e.target.value }, () => {
+                        console.log(this.state.password)
+                    });
+                }} /><br />
 
-                    <Button style={{ width: '102%' }} text='Login' onClick={() => {
-                        //api call for login
-                        api.Login(this.state.username , this.state.password).then((response:any) =>{
-                            this.setState({status:response.status} , () =>{
-                                this.setState({message:response.message});
-                                if(this.state.status){
-                                    api.storeUserInfo(response.data).then(() =>{
+                {(this.state.message != '') ?
+                    <div style={{ padding: 10, borderRadius: 5, backgroundColor: (this.state.status == true) ? 'green' : 'red' }}>
+                        <span style={{ color: 'white' }}>{this.state.message}</span>
+                    </div>
+                    : null}
+
+                <div className="loginAndRegister">
+                    <Button text='Login' onClick={() => {
+                        api.Login(this.state.username, this.state.password).then((response: any) => {
+                            this.setState({ status: response.status }, () => {
+                                this.setState({ message: response.message });
+                                if (this.state.status) {
+                                    api.storeUserInfo(response.data).then(() => {
                                         window.location.href = "/home";
                                     })
-                                      
                                 }
                             })
                         })
                     }} />
-                    <a onClick = {() =>{
-                        window.location.href = "/register"
-                    }}>Create account ...</a>
-                  </>
-            );
+                    <span>
+                    Create file <a onClick={() =>{
+                         window.location.href = "/register"
+                    }}>here..</a>
+                    </span>
+
+                </div>
+
+            </>
+        );
     }
 
     render() {
         return (
             <MainContainer>
                 <Panel>
-                    <div style={{justifyContent:'center', alignContent:'center',alignSelf:'center',textAlign:'center'}}>
-                        <img src='/logo.png' style={{width:'150px' , height:'150px' }}/>
+                    <div style={{ justifyContent: 'center', alignContent: 'center', alignSelf: 'center', textAlign: 'center', marginBottom: 20 }}>
+                        <img src='/logo.png' style={{ width: '150px', height: '150px' }} />
                     </div>
-                
+
                     {this.logginPanel()}
                 </Panel>
             </MainContainer>
