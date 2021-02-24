@@ -35,4 +35,5 @@ export interface userInfo{
     jwt:string,
     surname:string , 
     idNumber:number
+    accountId:string
 }

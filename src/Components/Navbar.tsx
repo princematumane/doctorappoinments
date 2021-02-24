@@ -145,7 +145,8 @@ export class Navbar extends React.Component<Props, State> {
         name:'Login',
         jwt :'',
         idNumber:0,
-        surname:''
+        surname:'',
+        accountId:''
     }
     state: State = {
         userLogged:this.tempUserLogged,

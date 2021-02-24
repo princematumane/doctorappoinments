@@ -8,13 +8,14 @@ export interface Doctors{
     specialiazation:string[],
     picture:string,
     age:number,
-    contact?:Contact,
+    contact:Contact,
     description:string
     hospital?:string
+    userId?:any
 }
 export interface Contact{
     phoneNumber?:number,
-    Email:string
+    Email?:string
 }
 
 export interface Patient{
@@ -25,4 +26,25 @@ export interface Patient{
     description:string
     hospital?:string
     contact: Contact
+}
+export interface Appointment{
+    description:string , 
+    doctorAccountId:string,
+    patientAccountId:string,
+    dateAndTime: string
+}
+export interface DoctorAppointed{
+    Name:string ,
+    Surname:string ,
+    AccountId:string ,
+    PhoneNumber:string ,
+    Email:string ,
+}
+
+export interface PatientAppointed{
+    Name:string ,
+    Surname:string ,
+    AccountId:string ,
+    PhoneNumber:string ,
+    Email:string ,
 }

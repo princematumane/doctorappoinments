@@ -13,7 +13,7 @@ export const ModalContatiner = styled.div`
     z-index: 2000;
     border-radius: 10px;
     width: 60%;
-    margin: 40px auto;
+    margin: 30px auto;
     &.fade-in {
          opacity: 1;
          transition: opacity linear 0.15s;
@@ -36,7 +36,7 @@ export const ModalContatiner = styled.div`
     .box-dialog {
         z-index: 1050;
         width: 100%;
-        background-color: #fefefe;
+        background:${({ theme }) => theme.bodyAltLighter};
         box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     .box-content {
         padding: 24px;
