@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import { Appointment } from "../Components/dashboard/interfaces";
 import { CloudAppResponse, Doctor, Patient, userInfo } from "./model/Interface";
 
 
@@ -14,7 +15,8 @@ export class API extends EventEmitter {
         name :"",
         surname:"",
         idNumber:0,
-        jwt:''
+        jwt:'',
+        accountId:''
     }
 
 loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
@@ -80,20 +82,87 @@ loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
       return err
     })
   }
-
-  async getDetails(): Promise<CloudAppResponse<any>> {
-    return await fetch(api.hostURL + '/api/Doctors/getDetails', {
-      method: 'GET',
+//appointment
+makeAppointment(appointment: Appointment,
+  success: (success?: any) => void,
+  error: (error?: any) => void) {
+    const requestOptions = {
+      method: 'POST',
+      //  headers: this.headers,
       headers: {
-        Authorization: 'Bearer ' + api.bearerToken,
-        'Content-Type': 'application/json'
-      }
-    }).then(res => res.json()).then(data => {
-      return data
-    }).catch((err) => {
-      return err
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.bearerToken
+      },
+      body: JSON.stringify(appointment)
+    };
+    console.log(requestOptions)
+  const url = this.hostURL + '/api/Patient/makeAppointment';
+  fetch(url, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      success(result)
     })
-  }
+    .catch((err) => {
+      console.log(err)
+      error(err);
+    });
+}
+
+async getMyAppointmentsPatient(): Promise<CloudAppResponse<any>> {
+  return await fetch(api.hostURL + '/api/Patient/getMyAppointments', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + api.bearerToken,
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json()).then(data => {
+    return data
+  }).catch((err) => {
+    return err
+  })
+}
+
+//appointment doctor 
+ 
+async getMyAppointmentsDoctor(): Promise<CloudAppResponse<any>> {
+  return await fetch(api.hostURL + '/api/Doctors/getMyAppointments', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + api.bearerToken,
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json()).then(data => {
+    return data
+  }).catch((err) => {
+    return err
+  })
+}
+async confirmAppointment(accountId:string , isConfirmed:boolean): Promise<CloudAppResponse<any>> {
+  return await fetch(api.hostURL + `/api/Doctors/confirmAppointment?accountId=${accountId}&status=${isConfirmed}` , {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + api.bearerToken,
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json()).then(data => {
+    return data
+  }).catch(err => {
+    return err
+  })
+}
+async getDetails(): Promise<CloudAppResponse<any>> {
+  return await fetch(api.hostURL + '/api/Doctors/getDetails', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + api.bearerToken,
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json()).then(data => {
+    return data
+  }).catch((err) => {
+    return err
+  })
+}
 
   async getDetailsOfPatient(id: any): Promise<CloudAppResponse<any>> {
     return await fetch(api.hostURL + `/api/Doctors/getDetailsOfPatient?id=` + id, {
@@ -143,6 +212,7 @@ loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
         error(err);
       });
   }
+
   AddPatient(patientToAdd: Patient,
     success: (success?: any) => void,
     error: (error?: any) => void) {
