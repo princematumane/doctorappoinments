@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 import { Button } from "./dashboard/button";
 import { api } from '../api/api';
 import { userInfo } from '../api/model/Interface';
-import { theme8bo } from '../themes';
+import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
+import { myAppointment } from './dashboard/interfaces';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
+    appointmentMenuOpen:boolean,
+    myAppointments:myAppointment[]
 }
 interface Props { }
 
@@ -68,6 +71,10 @@ const NavbarMainContainer = styled.div`
         background: ${({ theme }) => theme.bodyAlt};
         color: ${({ theme }) => theme.brandSpot};
     }
+`;
+
+const NotificationDiv = styled.div`
+    padding: 20px;
 `;
 const UserProfileDiv = styled.div`
     padding: 20px;
@@ -151,12 +158,16 @@ export class Navbar extends React.Component<Props, State> {
     state: State = {
         userLogged:this.tempUserLogged,
         menuButtonOpen: false,
+        appointmentMenuOpen: false,
+        myAppointments: []
     }
 
     private wrapperMenu: any;
+    private wrapperNotif: any;
     constructor(Props: Props) {
         super(Props);
         this.setWrapperMenu = this.setWrapperMenu.bind(this);
+        this.setWrapperNotif = this.setWrapperNotif.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     componentDidMount(): void {
@@ -169,16 +180,36 @@ export class Navbar extends React.Component<Props, State> {
             api.storeUserInfo(info);
             this.setState({userLogged:info});
         }
+        api.on("getMyAppointments" , () =>{
+            this.getMyAppointments();
+        });
+     this.getMyAppointments();
+
+    }
+    getMyAppointments(){
+        api.getMyAppointmentsPatient().then((data) =>{
+            this.setState({myAppointments:data.data} , () =>{
+                console.log(this.state.myAppointments);
+            });
+        })
+    }
+    componentWillUnmount(): void{
+        api.removeAllListeners('getMyAppointments');
     }
     componentWillMount(): void {
     }
     setWrapperMenu(menu:any) {
         this.wrapperMenu = menu;
     }
+    setWrapperNotif(menu:any) {
+        this.wrapperNotif = menu;
+    }
     handleClickOutside(event:any) {
         if (this.wrapperMenu && !this.wrapperMenu.contains(event.target)) {
-           
+            this.state.menuButtonOpen ? this.setState({menuButtonOpen: false}) : this.setState({});
+            this.state.appointmentMenuOpen ? this.setState({appointmentMenuOpen: false}) : this.setState({});
         }
+        this.state.appointmentMenuOpen ? this.setState({appointmentMenuOpen: false}) : this.setState({});
        this.state.menuButtonOpen ? this.setState({menuButtonOpen: false}) : this.setState({});
     }
     logo() {
@@ -196,18 +227,43 @@ export class Navbar extends React.Component<Props, State> {
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
                     {(this.state.userLogged.name == 'login')?
-                     <Button roundimg={''} text={this.state.userLogged.name} onClick={() => {
+                     <Button roundimg={''}  text={this.state.userLogged.name} onClick={() => {
                         window.location.href = '/Login';
                     }} />
                     :
                     <>
+                    <Button icon={"notification"} text={"notification"} onClick={() =>{
+                            this.setState({
+                                menuButtonOpen: false
+                            });
+                          this.setState({
+                            appointmentMenuOpen: !this.state.appointmentMenuOpen
+                        });
+                       // this.setState({userNameLogged:'login'})
+                    }}/>
                     <Button text={this.state.userLogged.name} onClick={() =>{
+                          this.setState({
+                            appointmentMenuOpen: false
+                        });
                           this.setState({
                             menuButtonOpen: !this.state.menuButtonOpen
                         });
                        // this.setState({userNameLogged:'login'})
                     }}/>
-
+ 
+                    {(this.state.appointmentMenuOpen)? <MenuPanel>
+                        {(this.state.userLogged)? <NotificationDiv>
+                           <div>
+                               {(this.state.myAppointments.length <1) ? <span style={{textAlign:'center',color:'red'}}>No Appointments</span>: <div>
+                               {(this.state.myAppointments.map((data,i) =>{
+                                    return <div key={i} style={{marginBottom:5,padding:5,borderRadius:5, background:lightTheme.bodyAltLighter}}>
+                                        <span>{i+1} Appointment with {data.doctorDetails.Name} at {data.DateAndTime} for {data.description}</span>
+                                    </div>
+                               }))}
+                               </div>}
+                           </div>
+                        </NotificationDiv> : <a>No data</a>}
+                    </MenuPanel> : null}
                     {(this.state.menuButtonOpen)? <MenuPanel>
                         {(this.state.userLogged)? <UserProfileDiv>
                             <span>Name : {this.state.userLogged.name}</span><br/>

@@ -173,8 +173,11 @@ export class Home extends React.Component<Props, State> {
                                      this.setState({appointmentDetails:{...this.state.appointmentDetails,dateAndTime:this.ddYYMM.toISOString()}});
                                      this.setState({appointmentDetails:{...this.state.appointmentDetails,doctorAccountId:this.state.doctor.userId}});
                                      api.makeAppointment(this.state.appointmentDetails ,succes =>{
-                                         console.log(succes);
-                                         this.setState({status:succes.status});
+                                         this.setState({status:succes.status} , () =>{
+                                             if(this.state.status){
+                                                 api.emit('getMyAppointments');
+                                             }
+                                         });
                                          this.setState({message:succes.message})
                                      } , err =>{})
                                      console.log(this.state.appointmentDetails);

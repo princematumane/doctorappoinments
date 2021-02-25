@@ -51,6 +51,7 @@ loggedUserInfo : userInfo  = this.tempLoggedUserInfo;
   logOut = async() =>{
     await localStorage.removeItem('userInfo');
     this.loggedUserInfo = this.tempLoggedUserInfo;
+    this.bearerToken = '';
   }
 
   async getAllDoctors(): Promise<CloudAppResponse<any>> {

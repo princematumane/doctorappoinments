@@ -33,6 +33,14 @@ export interface Appointment{
     patientAccountId:string,
     dateAndTime: string
 }
+export  interface myAppointment{
+    description:string , 
+    confirmed:any,
+    DateAndTime:any,
+    doctorDetails: DoctorAppointed,
+    patientDetails:PatientAppointed
+}
+
 export interface DoctorAppointed{
     Name:string ,
     Surname:string ,
