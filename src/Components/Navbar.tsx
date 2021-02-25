@@ -232,7 +232,7 @@ export class Navbar extends React.Component<Props, State> {
                     }} />
                     :
                     <>
-                    <Button icon={"notification"} text={"notification"} onClick={() =>{
+                    <Button   icon={"faBell"} text={"Notification"} onClick={() =>{
                             this.setState({
                                 menuButtonOpen: false
                             });
