@@ -10,6 +10,7 @@ import { Home } from "./Components/pages/home";
 import { Login } from "./Components/pages/login";
 import { Register } from "./Components/pages/register";
 import { api } from "./api/api";
+import { AddDoctor } from "./Components/pages/addDoctor";
 
 interface Props { }
 interface State {
@@ -36,27 +37,28 @@ class App extends React.Component<Props, State> {
     }
     render() {
 
-            return (
-                <div>
-                    <ThemeProvider theme={themeList[0]}>
-                        <GlobalStyles />
-                        <BrowserRouter>
-                            <Navbar/>
-                            <Switch>
-                                <Route exact path='/' component={Login}>
+        return (
+            <div>
+                <ThemeProvider theme={themeList[0]}>
+                    <GlobalStyles />
+                    <BrowserRouter>
+                        <Navbar />
+                        <Switch>
+                            <Route exact path='/' component={Login}>
+                            </Route>
+                            <Route exact path='/home' component={Home} />
+                            <Route exact path='/login' component={Login} />
+                            <Route exact path='/register' component={Register} />
+                            <Route exact path='/AddDoctor' component={AddDoctor} />
+                            <Route>
+                                Error 404 Not found
                                 </Route>
-                                <Route exact path='/home' component={Home}/>
-                                <Route exact path='/login' component={Login}/>
-                                <Route exact path='/register' component={Register}/>
-                                <Route>
-                                    Error 404 Not found
-                                </Route>
-                            </Switch>
-                        </BrowserRouter>
-                    </ThemeProvider>
-                </div>
-            )
-        }
+                        </Switch>
+                    </BrowserRouter>
+                </ThemeProvider>
+            </div>
+        )
+    }
 
 }
 export default hot(App)

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
+import { tokenDetails } from '../../api/model/Interface';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -11,8 +12,16 @@ import Modal from '../modal/modal';
 // tslint:disable-next-line: no-empty-interface
 interface Props { match: { params: { id: string } } }
 
-interface State { doctors: Doctors[], doctor: Doctors, isBookingAppointment: boolean ,
-    appointmentDetails: Appointment ,status:boolean,message:string}
+interface State {
+    doctors: Doctors[],
+    filteredDoctors: Doctors[],
+    doctor: Doctors,
+    isBookingAppointment: boolean,
+    appointmentDetails: Appointment,
+    status: boolean,
+    message: string,
+    tokenDetails: tokenDetails
+}
 
 const Maincontainter = styled.div`
     .center{
@@ -32,9 +41,9 @@ const Maincontainter = styled.div`
         padding-right:10px;
     }
     .filterSection{
-        marginLeft:10px;
+        marginLeft:5px;
         display:inline-flex;
-        padding:10px;
+        padding:5px;
     }
     .membersListing{
         padding:20px;
@@ -72,15 +81,17 @@ const Maincontainter = styled.div`
 export class Home extends React.Component<Props, State> {
     constructor(props: any) {
         super(props)
-        this.state = { 
+        this.state = {
             doctors: [],
-             doctor: this.tempDoctor, 
-             isBookingAppointment: false,
-            appointmentDetails:this.tempAppointmentDetails,
-            status:false,
-            message:''
+            doctor: this.tempDoctor,
+            isBookingAppointment: false,
+            appointmentDetails: this.tempAppointmentDetails,
+            status: false,
+            message: '',
+            tokenDetails: api.tempTokenDetails,
+            filteredDoctors: []
+        }
     }
-}
     tempDoctor: Doctors = {
         age: 0,
         description: '',
@@ -90,22 +101,30 @@ export class Home extends React.Component<Props, State> {
         surname: '',
         contact: { Email: '', phoneNumber: 0 },
         hospital: '',
-        userId:''
+        userId: ''
     }
     tempAppointmentDetails: Appointment = {
-        description :'',
+        description: '',
         dateAndTime: new Date().toISOString(),
-        doctorAccountId:'',
-        patientAccountId:''
+        doctorAccountId: '',
+        patientAccountId: ''
     }
- ddYYMM = new Date();
+    ddYYMM = new Date();
     componentDidMount() {
         api.getAllDoctors().then((data) => {
             console.log(data)
-            this.setState({ doctors: data.data })
-        })
+            this.setState({ doctors: data.data }, () => {
+                this.setState({ filteredDoctors: this.state.doctors });
+            })
+        });
+        api.on("tokenDetails", (tokenDetails: tokenDetails) => {
+            this.setState({ tokenDetails: tokenDetails });
+        });
         document.title = 'Home';
         console.log('props', this.props)
+    }
+    componentWillUnmount() {
+        api.removeAllListeners("tokenDetails");
     }
 
     bookAppointmentModal() {
@@ -113,13 +132,39 @@ export class Home extends React.Component<Props, State> {
 
         </div>
     }
+
+    filterByName(text: string) {
+        var filteredData = this.state.filteredDoctors.filter((d: Doctors) => {
+            var newD = d.firstName.toString().toLowerCase().includes(text.toLowerCase());
+            if (!newD) {
+                var customNameTemp = (d.firstName) ? d.surname : '';
+                newD = customNameTemp.toString().toLowerCase().includes(text.toLowerCase());
+            }
+            return newD
+        });
+        this.setState({ doctors: filteredData }, () => { })
+        return filteredData;
+    }
+
+    filterBySpecialiazation(text: string) {
+        var filteredData = this.state.filteredDoctors.filter((d: Doctors) => {
+            var newD = d.firstName.toString().toLowerCase().includes(text.toLowerCase());
+            if (!newD) {
+                var customNameTemp = d.specialiazation;
+                newD = customNameTemp.toString().toLowerCase().includes(text.toLowerCase());
+            }
+            return newD
+        });
+        this.setState({ doctors: filteredData }, () => { })
+        return filteredData;
+    }
     render() {
 
-        if(this.state.status){
-            setTimeout(() =>{
-                this.setState({status:false});
-                this.setState({message:''})
-            } , 5000)
+        if (this.state.status) {
+            setTimeout(() => {
+                this.setState({ status: false });
+                this.setState({ message: '' })
+            }, 5000)
         }
         return (
             <Maincontainter>
@@ -127,65 +172,69 @@ export class Home extends React.Component<Props, State> {
                     <div className="searchSection">
                         <div className={"filterSection"}>
                             <span>Name</span>
-                            <Input />
+                            <Input onChange={(e: any) => {
+                                this.filterByName(e.target.value);
+                            }} />
                         </div>
                         <div className={"filterSection"}>
                             <span>Proffession</span>
-                            <Input />
+                            <Input onChange={(e: any) => {
+                                this.filterBySpecialiazation(e.target.value);
+                            }} />
                         </div>
                         <div className={"filterSection"}>
                             <span>Hospital</span>
                             <Input />
                         </div>
                         <div className={"filterSection"}>
-                            <span>Date</span>
-                            <Input type={"date"} />
+                            <span>Address</span>
+                            <Input />
                         </div>
                     </div>
-                    {(this.state.isBookingAppointment) ? <div style={{width:'50%'}}>
-                        <Modal onChange = {() =>{
-                            this.setState({isBookingAppointment:false});
-                        }}id={this.state.doctor.firstName} isOpen={this.state.isBookingAppointment} title={'Book your appointment with '+ this.state.doctor.firstName}>
-                            <h4 style={{textAlign:'center'}}>Please fill the details below</h4>
+                    {(this.state.isBookingAppointment) ? <div style={{ width: '50%' }}>
+                        <Modal style={{ height: '100%' }} onChange={() => {
+                            this.setState({ isBookingAppointment: false });
+                        }} id={this.state.doctor.firstName} isOpen={this.state.isBookingAppointment} title={'Book your appointment with ' + this.state.doctor.firstName}>
+                            <h4 style={{ textAlign: 'center' }}>Please fill the details below</h4>
                             <div className="doctorDetails">
-                            <span>Choose date</span>
-                                <div style ={{display:'inline'}}>
-                                    <Input type={'date'}  onChange ={(e) =>{
+                                <span>Choose date</span>
+                                <div style={{ display: 'inline' }}>
+                                    <Input type={'date'} onChange={(e) => {
                                         this.ddYYMM = new Date(e.target.value);
-                                    }}/>
-                                    <Input type={'time'} onChange ={(e) =>{
+                                    }} />
+                                    <Input type={'time'} onChange={(e) => {
                                         console.log(e.target.value);
                                         var minAndSeconds = e.target.value.split(':');
-                                        var min =  new Date(this.ddYYMM).setHours(parseInt(minAndSeconds[0]));
+                                        var min = new Date(this.ddYYMM).setHours(parseInt(minAndSeconds[0]));
                                         var sec = new Date(this.ddYYMM).setMinutes(parseInt(minAndSeconds[1]));
                                         this.ddYYMM = new Date(new Date(this.ddYYMM).setHours(parseInt(minAndSeconds[0])));
-                                    }}/>
+                                    }} />
                                 </div>
                                 <span>Description </span>
-                                <textarea style={{height:200 , width:'100%'}} draggable={false} onChange ={(e) =>{
-                                       this.setState({appointmentDetails:{...this.state.appointmentDetails,description:e.target.value}});
+                                <textarea style={{ height: 200, width: '100%' }} draggable={false} onChange={(e) => {
+                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, description: e.target.value } });
                                 }}></textarea>
-                                {(this.state.message != '') ? <div style={{padding:10 , color: this.state.status? 'green' :'red'}}>
+                                {(this.state.message != '') ? <div style={{ padding: 10, color: this.state.status ? 'green' : 'red' }}>
                                     <span>{this.state.message}</span>
                                 </div> : null}
-                                <Button text={'Submit'} onClick={() =>{
-                                     this.setState({appointmentDetails:{...this.state.appointmentDetails,patientAccountId:api.loggedUserInfo.accountId}});
-                                     this.setState({appointmentDetails:{...this.state.appointmentDetails,dateAndTime:this.ddYYMM.toISOString()}});
-                                     this.setState({appointmentDetails:{...this.state.appointmentDetails,doctorAccountId:this.state.doctor.userId}});
-                                     api.makeAppointment(this.state.appointmentDetails ,succes =>{
-                                         this.setState({status:succes.status} , () =>{
-                                             if(this.state.status){
-                                                 api.emit('getMyAppointments');
-                                             }
-                                         });
-                                         this.setState({message:succes.message})
-                                     } , err =>{})
-                                     console.log(this.state.appointmentDetails);
-                                }}/>
+                                <Button text={'Submit'} onClick={() => {
+                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, patientAccountId: api.loggedUserInfo.accountId } });
+                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, dateAndTime: this.ddYYMM.toISOString() } });
+                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, doctorAccountId: this.state.doctor.userId } });
+                                    api.makeAppointment(this.state.appointmentDetails, succes => {
+                                        this.setState({ status: succes.status }, () => {
+                                            if (this.state.status) {
+                                                api.emit('getMyAppointments');
+                                            }
+                                        });
+                                        this.setState({ message: succes.message })
+                                    }, err => { })
+                                    console.log(this.state.appointmentDetails);
+                                }} />
                             </div>
 
                         </Modal>
-                         </div> : null}
+                    </div> : null}
                     <div className={"membersListing"}>
                         <div style={{ display: 'inline-flex', width: '100%' }}>
                             {(this.state.doctors) ?
@@ -201,7 +250,7 @@ export class Home extends React.Component<Props, State> {
                                             return <tr key={i + JSON.stringify(data)} onClick={() => {
                                                 this.setState({ doctor: data }, () => {
                                                     this.setState({ isBookingAppointment: true }, () => {
-                                                        this.setState({appointmentDetails:{...this.state.appointmentDetails,doctorAccountId:this.state.doctor.userId}});
+                                                        this.setState({ appointmentDetails: { ...this.state.appointmentDetails, doctorAccountId: this.state.doctor.userId } });
                                                         console.log(this.state.doctor);
                                                     })
                                                 })

@@ -3,15 +3,16 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "./dashboard/button";
 import { api } from '../api/api';
-import { userInfo } from '../api/model/Interface';
+import { tokenDetails, userInfo } from '../api/model/Interface';
 import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
-    appointmentMenuOpen:boolean,
-    myAppointments:myAppointment[]
+    appointmentMenuOpen: boolean,
+    myAppointments: myAppointment[],
+    tokenDetails: tokenDetails
 }
 interface Props { }
 
@@ -84,30 +85,22 @@ const UserProfileDiv = styled.div`
         flex-direction: row;
     }
 
-    #imageUrl {
-        width: 68px;
-        height: 68px;
-    }
-
-    #givenName {
-        font-weight: bold;
-        color: ${({ theme }) => theme.focusColor};
-    }
-
-    #familyName {
-
-    }
-
-    #imageHolder {
-        width: 68px;
-        height: 68px;
-        overflow: hidden;
-        border-radius : ${({ theme }) => theme.radius};
+    .AdminSection{
+        display: flex;
+        flex-direction: row;
+        text-align:right;
+        margin-top: 10px;
     }
 
     #profileData {
         flex: 1;
         padding-left: 20px;
+    }
+    .userDetails{
+        background: ${({ theme }) => theme.bodyAltLighter};
+        margin-top: 10px;
+        padding:5px;
+        border-radius:10px;
     }
 `;
 const MenuPanel = styled.div`
@@ -148,18 +141,19 @@ const MenuPanel = styled.div`
 `;
 export class Navbar extends React.Component<Props, State> {
 
-    tempUserLogged:userInfo =  {
-        name:'Login',
-        jwt :'',
-        idNumber:0,
-        surname:'',
-        accountId:''
+    tempUserLogged: userInfo = {
+        name: 'Login',
+        jwt: '',
+        idNumber: 0,
+        surname: '',
+        accountId: ''
     }
     state: State = {
-        userLogged:this.tempUserLogged,
+        userLogged: this.tempUserLogged,
         menuButtonOpen: false,
         appointmentMenuOpen: false,
-        myAppointments: []
+        myAppointments: [],
+        tokenDetails: api.tokenDetails
     }
 
     private wrapperMenu: any;
@@ -171,46 +165,56 @@ export class Navbar extends React.Component<Props, State> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     componentDidMount(): void {
-        api.on("userInfo" , (data:userInfo) =>{
-            this.setState({userLogged:data})
+        api.on("userInfo", (data: userInfo) => {
+            this.setState({ userLogged: data })
+        })
+        api.on('tokenDetails', (data: tokenDetails) => {
+            this.setState({ tokenDetails: data });
         })
         var loggedInfo = localStorage.getItem("userInfo");
-        if(loggedInfo){
+        if (loggedInfo) {
             var info = JSON.parse(loggedInfo);
             api.storeUserInfo(info);
-            this.setState({userLogged:info});
+            this.setState({ userLogged: info });
         }
-        api.on("getMyAppointments" , () =>{
+        let td = localStorage.getItem("tokenDetails");
+        if (td) {
+            var d = JSON.parse(td);
+            this.setState({ tokenDetails: d });
+        }
+        api.on("getMyAppointments", () => {
             this.getMyAppointments();
         });
-     this.getMyAppointments();
+        this.getMyAppointments();
 
     }
-    getMyAppointments(){
-        api.getMyAppointmentsPatient().then((data) =>{
-            this.setState({myAppointments:data.data} , () =>{
+    getMyAppointments() {
+        api.getMyAppointmentsPatient().then((data) => {
+            this.setState({ myAppointments: data.data }, () => {
                 console.log(this.state.myAppointments);
             });
         })
     }
-    componentWillUnmount(): void{
+    componentWillUnmount(): void {
         api.removeAllListeners('getMyAppointments');
+        api.removeAllListeners('tokenDetails');
+        api.removeAllListeners('userInfo');
     }
     componentWillMount(): void {
     }
-    setWrapperMenu(menu:any) {
+    setWrapperMenu(menu: any) {
         this.wrapperMenu = menu;
     }
-    setWrapperNotif(menu:any) {
+    setWrapperNotif(menu: any) {
         this.wrapperNotif = menu;
     }
-    handleClickOutside(event:any) {
+    handleClickOutside(event: any) {
         if (this.wrapperMenu && !this.wrapperMenu.contains(event.target)) {
-            this.state.menuButtonOpen ? this.setState({menuButtonOpen: false}) : this.setState({});
-            this.state.appointmentMenuOpen ? this.setState({appointmentMenuOpen: false}) : this.setState({});
+            this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
+            this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
         }
-        this.state.appointmentMenuOpen ? this.setState({appointmentMenuOpen: false}) : this.setState({});
-       this.state.menuButtonOpen ? this.setState({menuButtonOpen: false}) : this.setState({});
+        this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
+        this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
     }
     logo() {
         return <div className='logoContainer'>
@@ -226,59 +230,73 @@ export class Navbar extends React.Component<Props, State> {
                     {this.logo()}
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
-                    {(this.state.userLogged.name == 'login')?
-                     <Button roundimg={''}  text={this.state.userLogged.name} onClick={() => {
-                        window.location.href = '/Login';
-                    }} />
-                    :
-                    <>
-                    <Button   icon={"faBell"} text={"Notification"} onClick={() =>{
-                            this.setState({
-                                menuButtonOpen: false
-                            });
-                          this.setState({
-                            appointmentMenuOpen: !this.state.appointmentMenuOpen
-                        });
-                       // this.setState({userNameLogged:'login'})
-                    }}/>
-                    <Button text={this.state.userLogged.name} onClick={() =>{
-                          this.setState({
-                            appointmentMenuOpen: false
-                        });
-                          this.setState({
-                            menuButtonOpen: !this.state.menuButtonOpen
-                        });
-                       // this.setState({userNameLogged:'login'})
-                    }}/>
- 
-                    {(this.state.appointmentMenuOpen)? <MenuPanel>
-                        {(this.state.userLogged)? <NotificationDiv>
-                           <div>
-                               {(this.state.myAppointments.length <1) ? <span style={{textAlign:'center',color:'red'}}>No Appointments</span>: <div>
-                               {(this.state.myAppointments.map((data,i) =>{
-                                    return <div key={i} style={{marginBottom:5,padding:5,borderRadius:5, background:lightTheme.bodyAltLighter}}>
-                                        <span>{i+1} Appointment with {data.doctorDetails.Name} at {data.DateAndTime} for {data.description}</span>
-                                    </div>
-                               }))}
-                               </div>}
-                           </div>
-                        </NotificationDiv> : <a>No data</a>}
-                    </MenuPanel> : null}
-                    {(this.state.menuButtonOpen)? <MenuPanel>
-                        {(this.state.userLogged)? <UserProfileDiv>
-                            <span>Name : {this.state.userLogged.name}</span><br/>
-                            <span>Surname : {this.state.userLogged.surname}</span><br/>
-                            <span>Id Number : {this.state.userLogged.idNumber}</span><br/>
-                            <Button text={'Log Out'} onClick={() =>{
-                                api.logOut();
-                                this.setState({userLogged: this.tempUserLogged}, () =>{
-                                    window.location.href = '/login'
-                                })
+                    {(this.state.userLogged.name == 'login') ?
+                        <Button roundimg={''} text={this.state.userLogged.name} onClick={() => {
+                            window.location.href = '/Login';
+                        }} />
+                        :
+                        <>
+                            <Button icon={"faBell"} text={"Notification"} onClick={() => {
+                                this.setState({
+                                    menuButtonOpen: false
+                                });
+                                this.setState({
+                                    appointmentMenuOpen: !this.state.appointmentMenuOpen
+                                });
+                                // this.setState({userNameLogged:'login'})
                             }} />
-                        </UserProfileDiv> : <a>No data</a>}
-                    </MenuPanel> : null}
+                            <Button text={this.state.userLogged.name} onClick={() => {
+                                this.setState({
+                                    appointmentMenuOpen: false
+                                });
+                                this.setState({
+                                    menuButtonOpen: !this.state.menuButtonOpen
+                                });
+                                // this.setState({userNameLogged:'login'})
+                            }} />
 
-                    </>
+                            {(this.state.appointmentMenuOpen) ? <MenuPanel>
+                                {(this.state.userLogged) ? <NotificationDiv>
+                                    <div>
+                                        {(this.state.myAppointments.length < 1) ? <span style={{ textAlign: 'center', color: 'red' }}>No Appointments</span> : <div>
+                                            {(this.state.myAppointments.map((data, i) => {
+                                                return <div key={i} style={{ marginBottom: 5, padding: 5, borderRadius: 5, background: lightTheme.bodyAltLighter }}>
+                                                    <span>{i + 1} Appointment with {data.doctorDetails.Name} at {data.DateAndTime} for {data.description}</span>
+                                                </div>
+                                            }))}
+                                        </div>}
+                                    </div>
+                                </NotificationDiv> : <a>No data</a>}
+                            </MenuPanel> : null}
+                            {(this.state.menuButtonOpen) ? <MenuPanel>
+                                {(this.state.userLogged) ? <UserProfileDiv>
+                                    {(this.state.tokenDetails.admin) ?
+                                        <div className="AdminSection">
+                                            <a onClick={() => {
+                                                window.location.href = '/addDoctor'
+                                            }}>+ Add Doctor</a>
+                                        </div>
+                                        : null}
+
+                                    <div className="userDetails">
+                                        <span>Name : {this.state.userLogged.name}</span>
+                                    </div>
+                                    <div className="userDetails">
+                                        <span>Surname : {this.state.userLogged.surname}</span><br />
+                                    </div>
+                                    <div className="userDetails">
+                                        <span>Id Number : {this.state.userLogged.idNumber}</span><br />
+                                    </div>
+                                    <Button style={{ alignContent: 'right', align: 'right', alignSelf: 'right', textAlign: 'right' }} text={'Log Out'} onClick={() => {
+                                        api.logOut();
+                                        this.setState({ userLogged: this.tempUserLogged }, () => {
+                                            window.location.href = '/login'
+                                        })
+                                    }} />
+                                </UserProfileDiv> : <a>No data</a>}
+                            </MenuPanel> : null}
+
+                        </>
                     }
                     <div style={{ flex: 0, whiteSpace: 'nowrap', paddingLeft: 13 }}>
                         <a className='navbuttons navbuttonRed' href='#' onClick={() => { }}><i style={{ marginTop: '10px' }} className=''></i></a>
