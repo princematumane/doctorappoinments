@@ -41,6 +41,9 @@ export const ModalContatiner = styled.div`
     .box-content {
         padding: 24px;
         width: 100%;
+        max-height: calc(90vh);
+        overflow: hidden;
+        overflow-y: auto;
     }
     .box-header {
         height: 48px;

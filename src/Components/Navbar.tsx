@@ -7,6 +7,8 @@ import { tokenDetails, userInfo } from '../api/model/Interface';
 import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
@@ -41,7 +43,10 @@ const NavbarMainContainer = styled.div`
     display: flex;
     flex-direction: row;
     user-select: none;
-    
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:99;
     div.logoContainer {
         height: 80px;
         overflow: hidden;
@@ -59,9 +64,10 @@ const NavbarMainContainer = styled.div`
     }
     
      .navbuttons {
-        padding: 12px 10px;
-        transition: all 0.2s;
-        color: ${({ theme }) => theme.bodyAlt};
+        background:${({ theme }) => theme.body};
+        padding:10px;
+        border-radius:10px;
+        margin-right: 20px;
     }
     .navbuttons:hover {
         border-bottom: 2px solid  ${({ theme }) => theme.bodyAlt};
@@ -160,11 +166,13 @@ export class Navbar extends React.Component<Props, State> {
     private wrapperNotif: any;
     constructor(Props: Props) {
         super(Props);
+        this.wrapperMenu = React.createRef();
         this.setWrapperMenu = this.setWrapperMenu.bind(this);
         this.setWrapperNotif = this.setWrapperNotif.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     componentDidMount(): void {
+        document.addEventListener('mousedown', this.handleClickOutside);
         api.on("userInfo", (data: userInfo) => {
             this.setState({ userLogged: data })
         })
@@ -186,16 +194,25 @@ export class Navbar extends React.Component<Props, State> {
             this.getMyAppointments();
         });
         this.getMyAppointments();
-
     }
     getMyAppointments() {
-        api.getMyAppointmentsPatient().then((data) => {
-            this.setState({ myAppointments: data.data }, () => {
-                console.log(this.state.myAppointments);
-            });
-        })
+        if (api.tokenDetails.isDoctor) {
+            api.getMyAppointmentsDoctor().then((data) => {
+                this.setState({ myAppointments: data.data }, () => {
+                    console.log(this.state.myAppointments);
+                });
+            })
+        } else {
+            api.getMyAppointmentsPatient().then((data) => {
+                this.setState({ myAppointments: data.data }, () => {
+                    console.log(this.state.myAppointments);
+                });
+            })
+        }
+
     }
     componentWillUnmount(): void {
+        document.removeEventListener('mousedown', this.handleClickOutside);
         api.removeAllListeners('getMyAppointments');
         api.removeAllListeners('tokenDetails');
         api.removeAllListeners('userInfo');
@@ -209,12 +226,10 @@ export class Navbar extends React.Component<Props, State> {
         this.wrapperNotif = menu;
     }
     handleClickOutside(event: any) {
-        if (this.wrapperMenu && !this.wrapperMenu.contains(event.target)) {
+        if (this.wrapperMenu && !this.wrapperMenu.current.contains(event.target)) {
             this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
             this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
         }
-        this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
-        this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
     }
     logo() {
         return <div className='logoContainer'>
@@ -231,21 +246,22 @@ export class Navbar extends React.Component<Props, State> {
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
                     {(this.state.userLogged.name == 'login') ?
-                        <Button roundimg={''} text={this.state.userLogged.name} onClick={() => {
+                        <Button roundimg={'/unknown.png'} text={this.state.userLogged.name} onClick={() => {
                             window.location.href = '/Login';
                         }} />
                         :
                         <>
-                            <Button icon={"faBell"} text={"Notification"} onClick={() => {
+                            <div ref={this.wrapperMenu} className={'navbuttons'} onClick={() => {
                                 this.setState({
                                     menuButtonOpen: false
                                 });
                                 this.setState({
                                     appointmentMenuOpen: !this.state.appointmentMenuOpen
                                 });
-                                // this.setState({userNameLogged:'login'})
-                            }} />
-                            <Button text={this.state.userLogged.name} onClick={() => {
+                            }}>
+                                <FontAwesomeIcon icon={faBell} />
+                            </div>
+                            <Button icon={'/unknown.png'} text={this.state.userLogged.name} onClick={() => {
                                 this.setState({
                                     appointmentMenuOpen: false
                                 });
@@ -287,7 +303,7 @@ export class Navbar extends React.Component<Props, State> {
                                     <div className="userDetails">
                                         <span>Id Number : {this.state.userLogged.idNumber}</span><br />
                                     </div>
-                                    <Button style={{ alignContent: 'right', align: 'right', alignSelf: 'right', textAlign: 'right' }} text={'Log Out'} onClick={() => {
+                                    <Button style={{ float: 'right', marginTop: '10px' }} text={'Log Out'} onClick={() => {
                                         api.logOut();
                                         this.setState({ userLogged: this.tempUserLogged }, () => {
                                             window.location.href = '/login'
@@ -298,9 +314,6 @@ export class Navbar extends React.Component<Props, State> {
 
                         </>
                     }
-                    <div style={{ flex: 0, whiteSpace: 'nowrap', paddingLeft: 13 }}>
-                        <a className='navbuttons navbuttonRed' href='#' onClick={() => { }}><i style={{ marginTop: '10px' }} className=''></i></a>
-                    </div>
                 </div>
             </NavbarMainContainer>
 

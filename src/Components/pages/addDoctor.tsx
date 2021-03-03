@@ -61,7 +61,6 @@ export class AddDoctor extends React.Component {
         firstName: '',
         gender: 'notSpecified',
         idNumber: 0,
-        lastName: '',
         password: '',
         phoneNumber: '',
         picture: "",
@@ -169,7 +168,7 @@ export class AddDoctor extends React.Component {
                         this.setState({ status: success.status }, () => {
                             this.setState({ message: success.message })
                             if (this.state.status) {
-                                //window.location.href = "/home";
+                                window.location.href = "/home";
                             }
                         })
 

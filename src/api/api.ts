@@ -194,7 +194,7 @@ export class API extends EventEmitter {
 
   async deleteDetailsDoctor(accountid: any): Promise<CloudAppResponse<any>> {
     return await fetch(api.hostURL + `/api/Doctors/deleteDetails?accountId=` + accountid, {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
         Authorization: 'Bearer ' + api.bearerToken,
         'Content-Type': 'application/json'
@@ -205,13 +205,29 @@ export class API extends EventEmitter {
       return err
     })
   }
-  updateDetailsDoctor(patientToAdd: Patient,
+
+  async getDetailsDoctor(accountid: any): Promise<CloudAppResponse<any>> {
+    return await fetch(api.hostURL + `/api/Doctors/getDetailsDoctor?userId=` + accountid, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch(err => {
+      return err
+    })
+  }
+
+  updateDetailsDoctor(patientToAdd: Doctor,
     success: (success?: any) => void,
     error: (error?: any) => void) {
     const requestOptions = {
       method: 'PATCH',
       headers: {
-        Authorization: 'Bearer ' + this.bearerToken
+        Authorization: 'Bearer ' + this.bearerToken,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(patientToAdd) //JSON.Parse
     };

@@ -58,7 +58,6 @@ export class Register extends React.Component {
         firstName: '',
         gender: '',
         idNumber: 0,
-        lastName: '',
         password: '',
         phoneNumber: '',
         picture: "",
@@ -86,10 +85,10 @@ export class Register extends React.Component {
                 <Input onChange={(e: any) => {
                     this.setState({ personDetails: { ...this.state.personDetails, firstName: e.target.value } })
                 }} />
-                <span>Last Name</span>
+                {/* <span>Last Name</span>
                 <Input onChange={(e: any) => {
                     this.setState({ personDetails: { ...this.state.personDetails, lastName: e.target.value } })
-                }} />
+                }} /> */}
                 <span>surname</span>
                 <Input onChange={(e: any) => {
                     this.setState({ personDetails: { ...this.state.personDetails, surname: e.target.value } })
