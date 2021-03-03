@@ -19,6 +19,7 @@ const MainContainer = styled.div`
     right:0;
     position: absolute;
     min-height: 110%;
+    z-index: 99;
 `;
 
 export const Panel = styled.div`
@@ -145,7 +146,6 @@ export class AddDoctor extends React.Component {
                             this.setState({ personDetails: { ...this.state.personDetails, pictuer: data } });
                         }
                     });
-
                 }} />
 
                 <span>gender</span>

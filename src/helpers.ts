@@ -8,9 +8,7 @@ export async function getBase64(e: any): Promise<string> {
         return reader.result;
     };
     reader.onerror = function (error) {
-        //console.log('error', reader.result, error);
         return 'error';
     };
-    //console.log('hepler', reader.result, reader);
     return 'error';
 }

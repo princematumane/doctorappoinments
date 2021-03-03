@@ -8,7 +8,7 @@ import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
@@ -82,6 +82,18 @@ const NavbarMainContainer = styled.div`
 
 const NotificationDiv = styled.div`
     padding: 20px;
+    .action{
+        background: ${({ theme }) => theme.body};
+        padding:5px;
+        margin-bottom:3px;
+        align-items:center;
+        cursor:pointer;
+        border-radius:10px;
+    }
+
+    .action:hover{
+        background: ${({ theme }) => theme.bodyAltLighter};
+    }
 `;
 const UserProfileDiv = styled.div`
     padding: 20px;
@@ -123,7 +135,7 @@ const MenuPanel = styled.div`
     box-sizing: border-box;
     padding: 2px;
     padding-bottom: 0;
-    z-index: 1000;
+    z-index: -1;
     #center {
         position: absolute;
         top: 50%;
@@ -197,19 +209,21 @@ export class Navbar extends React.Component<Props, State> {
     }
     getMyAppointments() {
         if (api.tokenDetails.isDoctor) {
+
             api.getMyAppointmentsDoctor().then((data) => {
+                console.log('doctor appoinment response ', data);
                 this.setState({ myAppointments: data.data }, () => {
                     console.log(this.state.myAppointments);
                 });
             })
         } else {
             api.getMyAppointmentsPatient().then((data) => {
+                console.log('patient appoinment response ', data);
                 this.setState({ myAppointments: data.data }, () => {
                     console.log(this.state.myAppointments);
                 });
             })
         }
-
     }
     componentWillUnmount(): void {
         document.removeEventListener('mousedown', this.handleClickOutside);
@@ -227,8 +241,8 @@ export class Navbar extends React.Component<Props, State> {
     }
     handleClickOutside(event: any) {
         if (this.wrapperMenu && !this.wrapperMenu.current.contains(event.target)) {
-            this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
-            this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
+            //this.state.menuButtonOpen ? this.setState({ menuButtonOpen: false }) : this.setState({});
+            //this.state.appointmentMenuOpen ? this.setState({ appointmentMenuOpen: false }) : this.setState({});
         }
     }
     logo() {
@@ -252,6 +266,7 @@ export class Navbar extends React.Component<Props, State> {
                         :
                         <>
                             <div ref={this.wrapperMenu} className={'navbuttons'} onClick={() => {
+                                this.getMyAppointments();
                                 this.setState({
                                     menuButtonOpen: false
                                 });
@@ -274,10 +289,33 @@ export class Navbar extends React.Component<Props, State> {
                             {(this.state.appointmentMenuOpen) ? <MenuPanel>
                                 {(this.state.userLogged) ? <NotificationDiv>
                                     <div>
-                                        {(this.state.myAppointments.length < 1) ? <span style={{ textAlign: 'center', color: 'red' }}>No Appointments</span> : <div>
+                                        {(this.state.myAppointments.length <= 0) ? <span style={{ textAlign: 'center', color: 'red' }}>No Appointments</span> : <div>
                                             {(this.state.myAppointments.map((data, i) => {
                                                 return <div key={i} style={{ marginBottom: 5, padding: 5, borderRadius: 5, background: lightTheme.bodyAltLighter }}>
-                                                    <span>{i + 1} Appointment with {data.doctorDetails.Name} at {data.DateAndTime} for {data.description}</span>
+                                                    <span>{i + 1} Appointment with {data.doctorDetails.Surname} at {data.DateAndTime} for {data.description}</span><br />
+                                                    <span>Appointment Status : {data.confirmed}</span>
+                                                    {(api.tokenDetails.isDoctor && data.confirmed == 'Waiting') ? <div style={{ display: 'inline' }}>
+                                                        <div className={'action'} onClick={() => {
+                                                            api.confirmAppointment(data.appId, true).then((d) => {
+                                                                if (d.status) {
+                                                                    alert(d.message + ' ' + data.appId);
+                                                                }
+                                                            });
+                                                            this.getMyAppointments();
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faCheck} /> Approve
+                                                        </div>
+                                                        <div className={'action'} onClick={() => {
+                                                            api.confirmAppointment(data.appId, false).then((d) => {
+                                                                if (d.status) {
+                                                                    alert(d.message + ' ' + data.appId);
+                                                                }
+                                                            });
+                                                            this.getMyAppointments();
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faTimes} /> decline
+                                                        </div>
+                                                    </div> : null}
                                                 </div>
                                             }))}
                                         </div>}

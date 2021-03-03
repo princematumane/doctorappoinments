@@ -18,6 +18,7 @@ const MainContainer = styled.div`
     right:0;
     position: absolute;
     min-height: 110%;
+    z-index: 99;
 `;
 
 export const Panel = styled.div`

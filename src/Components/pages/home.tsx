@@ -31,6 +31,8 @@ interface State {
 
 const Maincontainter = styled.div`
 height: 100%;
+position:fixed;
+width: 100%;
     .center{
         position: absolute;
         top: 150px;
@@ -353,7 +355,7 @@ export class Home extends React.Component<Props, State> {
 
                         : null}
                     <div className={"membersListing"}>
-                        <div style={{ display: 'inline-flex', width: '100%' }}>
+                        <div style={{ display: 'block', width: '100%', overflow: 'auto', height: 500 }}>
                             {(this.state.doctors) ?
                                 <table>
                                     <thead>
@@ -363,7 +365,7 @@ export class Home extends React.Component<Props, State> {
                                         <th>Specialiazation</th>
                                         {(api.tokenDetails.admin) ? <th>Delete || Edit</th> : null}
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{}}>
                                         {(this.state.doctors.map((data, i) => {
                                             return <tr key={i + JSON.stringify(data)}>
                                                 <td onClick={() => {

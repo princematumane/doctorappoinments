@@ -16,6 +16,7 @@ const MainContainer = styled.div`
     right:0;
     position: absolute;
     min-height: 1500;
+    z-index: 99;
 `;
 
 export const Panel = styled.div`
@@ -62,17 +63,17 @@ export class Login extends React.Component {
 
     componentDidMount() {
 
-        api.on("userInfo" , (data:userInfo) =>{
-            window.location.href ='/home'
+        api.on("userInfo", (data: userInfo) => {
+            window.location.href = '/home'
         })
         var loggedInfo = localStorage.getItem("userInfo");
-        if(loggedInfo){
+        if (loggedInfo) {
             var info = JSON.parse(loggedInfo);
-            if(info.jwt){
-                window.location.href ='/home';
+            if (info.jwt) {
+                window.location.href = '/home';
             }
         }
-     }
+    }
     logginPanel() {
         return (
             <>
@@ -107,9 +108,9 @@ export class Login extends React.Component {
                         })
                     }} />
                     <span>
-                    Create file <a onClick={() =>{
-                         window.location.href = "/register"
-                    }}>here..</a>
+                        Create file <a onClick={() => {
+                            window.location.href = "/register"
+                        }}>here..</a>
                     </span>
 
                 </div>

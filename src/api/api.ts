@@ -31,7 +31,7 @@ export class API extends EventEmitter {
     super();
     setInterval(() => {
       api.loadUserInfo();
-    }, 5000)
+    }, 2000)
   }
 
   loadUserInfo = async () => {
@@ -44,6 +44,8 @@ export class API extends EventEmitter {
         this.tokenDetails = JSON.parse(td);
       }
     }
+    console.log(userInfo);
+    console.log(td)
   }
 
   storeUserInfo = async (userInfo: userInfo) => {
@@ -63,6 +65,7 @@ export class API extends EventEmitter {
   }
   logOut = async () => {
     await localStorage.removeItem('userInfo');
+    await localStorage.removeItem('tokenDetails');
     this.loggedUserInfo = this.tempLoggedUserInfo;
     this.bearerToken = '';
   }
@@ -151,9 +154,9 @@ export class API extends EventEmitter {
       return err
     })
   }
-  async confirmAppointment(accountId: string, isConfirmed: boolean): Promise<CloudAppResponse<any>> {
-    return await fetch(api.hostURL + `/api/Doctors/confirmAppointment?accountId=${accountId}&status=${isConfirmed}`, {
-      method: 'POST',
+  async confirmAppointment(appId: string, isConfirmed: boolean): Promise<any> {
+    return await fetch(api.hostURL + `/api/Doctors/confirmAppointment?appId=${appId}&status=${isConfirmed}`, {
+      method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + api.bearerToken,
         'Content-Type': 'application/json'
