@@ -126,7 +126,7 @@ export class Home extends React.Component<Props, State> {
     }
     tempPersonDetails: Doctor = {
         specialiazation: [],
-        address: "",
+        hospitalAddress: "",
         email: "",
         firstName: '',
         gender: 'notSpecified',
@@ -305,8 +305,8 @@ export class Home extends React.Component<Props, State> {
                                     this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, email: e.target.value } })
                                 }} />
                                 <span>Address</span>
-                                <Input value={this.state.oldDoctorDetails.address} onChange={(e: any) => {
-                                    this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, address: e.target.value } })
+                                <Input value={this.state.oldDoctorDetails.hospitalAddress} onChange={(e: any) => {
+                                    this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, hospitalAddress: e.target.value } })
                                 }} />
                                 <span>Password</span>
                                 <Input value={this.state.oldDoctorDetails.password} onChange={(e: any) => {
@@ -391,6 +391,7 @@ export class Home extends React.Component<Props, State> {
                                                     <FontAwesomeIcon style={{ zIndex: 99 }} icon={faPen} onClick={() => {
                                                         api.getDetailsDoctor(data.userId).then((res: any) => {
                                                             this.setState({ oldDoctorDetails: res.data }, () => {
+                                                                console.log(this.state.oldDoctorDetails)
                                                                 this.setState({ onUpdateDoctorDetails: true });
                                                             })
                                                         })

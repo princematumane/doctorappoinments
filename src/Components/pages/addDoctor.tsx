@@ -56,7 +56,7 @@ export class AddDoctor extends React.Component {
 
     tempPersonDetails: Doctor = {
         specialiazation: [],
-        address: "",
+        hospitalAddress: "",
         email: "",
         firstName: '',
         gender: 'notSpecified',
@@ -130,7 +130,7 @@ export class AddDoctor extends React.Component {
                 }} />
                 <span>Address</span>
                 <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, address: e.target.value } })
+                    this.setState({ personDetails: { ...this.state.personDetails, hospitalAddress: e.target.value } })
                 }} />
                 <span>Password</span>
                 <Input onChange={(e: any) => {

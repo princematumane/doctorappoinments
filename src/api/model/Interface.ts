@@ -7,7 +7,7 @@ export interface CloudAppResponse<T> {
 export interface Doctor {
     idNumber: number,
     firstName: string,
-    address: string,
+    hospitalAddress: string,
     phoneNumber: string,
     specialiazation: string[],
     email: string,
@@ -15,6 +15,7 @@ export interface Doctor {
     surname: string,
     picture: string,
     password: string,
+    userId?: string
 }
 export interface Patient {
     idNumber: number,
