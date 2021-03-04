@@ -209,7 +209,6 @@ export class Navbar extends React.Component<Props, State> {
     }
     getMyAppointments() {
         if (api.tokenDetails.isDoctor) {
-
             api.getMyAppointmentsDoctor().then((data) => {
                 console.log('doctor appoinment response ', data);
                 this.setState({ myAppointments: data.data }, () => {
@@ -342,10 +341,11 @@ export class Navbar extends React.Component<Props, State> {
                                         <span>Id Number : {this.state.userLogged.idNumber}</span><br />
                                     </div>
                                     <Button style={{ float: 'right', marginTop: '10px' }} text={'Log Out'} onClick={() => {
-                                        api.logOut();
-                                        this.setState({ userLogged: this.tempUserLogged }, () => {
-                                            window.location.href = '/login'
-                                        })
+                                        api.logOut().then(() => {
+                                            this.setState({ userLogged: this.tempUserLogged }, () => {
+                                                window.location.href = '/login'
+                                            })
+                                        });
                                     }} />
                                 </UserProfileDiv> : <a>No data</a>}
                             </MenuPanel> : null}
