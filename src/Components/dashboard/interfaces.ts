@@ -37,23 +37,23 @@ export interface myAppointment {
     description: string,
     confirmed: string,
     appId: string,
-    DateAndTime: any,
+    dateAndTime: any,
     doctorDetails: DoctorAppointed,
     patientDetails: PatientAppointed
 }
 
 export interface DoctorAppointed {
-    Name: string,
-    Surname: string,
-    AccountId: string,
-    PhoneNumber: string,
-    Email: string,
+    name: string,
+    surname: string,
+    accountId: string,
+    phoneNumber: string,
+    email: string,
 }
 
 export interface PatientAppointed {
-    Name: string,
-    Surname: string,
-    AccountId: string,
-    PhoneNumber: string,
-    Email: string,
+    name: string,
+    surname: string,
+    accountId: string,
+    phoneNumber: string,
+    email: string,
 }

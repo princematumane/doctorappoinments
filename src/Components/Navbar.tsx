@@ -210,16 +210,16 @@ export class Navbar extends React.Component<Props, State> {
     getMyAppointments() {
         if (api.tokenDetails.isDoctor) {
             api.getMyAppointmentsDoctor().then((data) => {
-                console.log('doctor appoinment response ', data);
+                // console.log('doctor appoinment response ', data);
                 this.setState({ myAppointments: data.data }, () => {
-                    console.log(this.state.myAppointments);
+                    ///  console.log(this.state.myAppointments);
                 });
             })
         } else {
             api.getMyAppointmentsPatient().then((data) => {
-                console.log('patient appoinment response ', data);
+                // console.log('patient appoinment response ', data);
                 this.setState({ myAppointments: data.data }, () => {
-                    console.log(this.state.myAppointments);
+                    //  console.log(this.state.myAppointments);
                 });
             })
         }
@@ -250,6 +250,22 @@ export class Navbar extends React.Component<Props, State> {
                 <img src='/logo.png' height='80px' />
             </Logo>
         </div >
+    }
+    dateArranger(d: string) {
+        let date = new Date(d);
+        let year = date.getFullYear();
+        var month: any = date.getMonth() + 1;
+        let dt: any = date.getDate();
+
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        if (dt < 10) {
+            dt = '0' + dt;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+        return year + '-' + month + '-' + dt + ' ' + hours + ':' + minutes;
     }
     render() {
         return (
@@ -291,9 +307,18 @@ export class Navbar extends React.Component<Props, State> {
                                         {(this.state.myAppointments.length <= 0) ? <span style={{ textAlign: 'center', color: 'red' }}>No Appointments</span> : <div>
                                             {(this.state.myAppointments.map((data, i) => {
                                                 return <div key={i} style={{ marginBottom: 5, padding: 5, borderRadius: 5, background: lightTheme.bodyAltLighter }}>
-                                                    <span>{i + 1} Appointment with {data.doctorDetails.Surname} at {data.DateAndTime} for {data.description}</span><br />
-                                                    <span>Appointment Status : {data.confirmed}</span>
-                                                    {(api.tokenDetails.isDoctor && data.confirmed == 'Waiting') ? <div style={{ display: 'inline' }}>
+                                                    {(this.state.tokenDetails.isDoctor) ?
+                                                        <div>
+                                                            <span> Appointment with  {data.patientDetails.name} {data.patientDetails.surname} </span><br />
+                                                            <span> at {this.dateArranger(data.dateAndTime)} for {data.description}</span>
+                                                        </div> :
+                                                        <div>
+                                                            <span>Appointment with  {data.doctorDetails.name} {data.doctorDetails.surname} </span><br />
+                                                            <span> at {this.dateArranger(data.dateAndTime)} for {data.description}</span>
+                                                        </div>
+                                                    }
+                                                    <span style={{ fontWeight: 'bold' }}>Appointment Status : {data.confirmed}</span>
+                                                    {(this.state.tokenDetails.isDoctor && data.confirmed == 'Waiting') ? <div style={{ display: 'inline' }}>
                                                         <div className={'action'} onClick={() => {
                                                             api.confirmAppointment(data.appId, true).then((d) => {
                                                                 if (d.status) {
