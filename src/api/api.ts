@@ -66,6 +66,7 @@ export class API extends EventEmitter {
   logOut = async () => {
     await localStorage.removeItem('userInfo');
     await localStorage.removeItem('tokenDetails');
+    await localStorage.removeItem("myPicture");
     this.loggedUserInfo = this.tempLoggedUserInfo;
     this.bearerToken = '';
   }
