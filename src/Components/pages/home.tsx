@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { Doctor, tokenDetails } from '../../api/model/Interface';
-import { getBase64 } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -103,7 +102,7 @@ export class Home extends React.Component<Props, State> {
             appointmentDetails: this.tempAppointmentDetails,
             status: false,
             message: '',
-            tokenDetails: api.tempTokenDetails,
+            tokenDetails: api.tokenDetails ? api.tokenDetails : api.tempTokenDetails,
             filteredDoctors: [],
             onUpdateDoctorDetails: false,
             oldDoctorDetails: this.tempPersonDetails
@@ -141,20 +140,38 @@ export class Home extends React.Component<Props, State> {
     genderOptions: DropdownInterface[] = [{ value: 'male', option: 'Male' }, { value: 'female', option: 'Female' }];
     ddYYMM = new Date();
     componentDidMount() {
+        this.setState({ tokenDetails: api.tokenDetails }, () => {
+            console.log('props', this.state.tokenDetails, api.tokenDetails)
+            if (this.state.tokenDetails.admin) {
+                this.getAllPatient();
+            }
+        })
         this.getDoctors();
         api.on("tokenDetails", (tokenDetails: tokenDetails) => {
             this.setState({ tokenDetails: tokenDetails });
         });
+
         document.title = 'Home';
-        console.log('props', this.props)
+
     }
 
     getDoctors() {
         api.getAllDoctors().then((data) => {
-            console.log(data)
+            //console.log(data)
             this.setState({ doctors: data.data }, () => {
                 this.setState({ filteredDoctors: this.state.doctors });
             })
+        });
+    }
+
+
+    getAllPatient() {
+        console.log("xxxxxxx patient")
+        api.getAllPatients().then((data) => {
+            console.log("xxxxxxx patient", data)
+            // this.setState({ doctors: data.data }, () => {
+            //     this.setState({ filteredDoctors: this.state.doctors });
+            // })
         });
     }
     componentWillUnmount() {
@@ -198,6 +215,14 @@ export class Home extends React.Component<Props, State> {
                 this.setState({ appointmentDetails: { ...this.state.appointmentDetails, doctorAccountId: this.state.doctor.userId } });
             })
         })
+    }
+    getBase64(file: any) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     }
     render() {
 
@@ -316,10 +341,11 @@ export class Home extends React.Component<Props, State> {
                                 }} />
                                 <span>Picture</span>
                                 <Input type={'file'} onChange={(e: any) => {
-                                    getBase64(e).then((data) => {
-                                        console.log(data);
+                                    this.getBase64(e.target.files[0]).then((data) => {
+                                        var img: any = data;
                                         if (data !== 'error') {
-                                            this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, picture: data } });
+                                            console.log(img);
+                                            this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, picture: img } });
                                         }
                                     });
                                 }} />
@@ -367,11 +393,18 @@ export class Home extends React.Component<Props, State> {
                                     </thead>
                                     <tbody>
                                         {(this.state.doctors.map((data, i) => {
+                                            console.log(data)
                                             return <tr key={i + JSON.stringify(data)}>
                                                 <td onClick={() => {
                                                     this.setDoctorToBook(data);
                                                 }}>
-                                                    <img style={{ width: 50, height: 50 }} src={(data.picture == '' || data.picture == 'string') ? "https://www.vhv.rs/dpng/d/263-2633697_nurse-doctor-icon-png-transparent-png.png" : data.picture} />
+
+                                                    {(data.picture == '' || data.picture == 'string') ?
+                                                        <img style={{ width: 50, height: 50 }} src={"https://www.vhv.rs/dpng/d/263-2633697_nurse-doctor-icon-png-transparent-png.png"} />
+                                                        :
+                                                        <img style={{ width: 50, height: 50 }} src={data.picture} alt="Doctor Picture" />
+                                                    }
+
                                                 </td>
                                                 <td onClick={() => {
                                                     this.setDoctorToBook(data);

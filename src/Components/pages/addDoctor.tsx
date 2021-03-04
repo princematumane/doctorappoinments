@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { Doctor, Patient, tokenDetails } from '../../api/model/Interface';
-import { getBase64 } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -89,6 +88,18 @@ export class AddDoctor extends React.Component {
         api.removeAllListeners('tokenDetails');
         api.removeAllListeners('userInfo');
     }
+    async getBase64(e: any): Promise<string> {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            return reader.result;
+        };
+        reader.onerror = function (error) {
+            return 'error';
+        };
+        return 'error';
+    }
     logginPanel() {
         if (!this.state.tokenDetails.admin) {
             // setTimeout(() => {
@@ -140,7 +151,7 @@ export class AddDoctor extends React.Component {
 
                 <span>Picture</span>
                 <Input type={'file'} onChange={(e: any) => {
-                    getBase64(e).then((data) => {
+                    this.getBase64(e).then((data) => {
                         console.log(data);
                         if (data !== 'error') {
                             this.setState({ personDetails: { ...this.state.personDetails, pictuer: data } });

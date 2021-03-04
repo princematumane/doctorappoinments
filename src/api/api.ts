@@ -44,8 +44,8 @@ export class API extends EventEmitter {
         this.tokenDetails = JSON.parse(td);
       }
     }
-    console.log(userInfo);
-    console.log(td)
+    //console.log(userInfo);
+    //console.log(td)
   }
 
   storeUserInfo = async (userInfo: userInfo) => {
@@ -79,7 +79,7 @@ export class API extends EventEmitter {
         'Content-Type': 'application/json'
       }
     }).then(res => res.json()).then(data => {
-      console.log(data);
+      // console.log(data);
       return data
     }).catch((err) => {
       return err

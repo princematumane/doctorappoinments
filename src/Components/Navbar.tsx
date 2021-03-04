@@ -14,7 +14,8 @@ interface State {
     menuButtonOpen: boolean,
     appointmentMenuOpen: boolean,
     myAppointments: myAppointment[],
-    tokenDetails: tokenDetails
+    tokenDetails: tokenDetails,
+    myPicture: string
 }
 interface Props { }
 
@@ -171,7 +172,8 @@ export class Navbar extends React.Component<Props, State> {
         menuButtonOpen: false,
         appointmentMenuOpen: false,
         myAppointments: [],
-        tokenDetails: api.tokenDetails
+        tokenDetails: api.tokenDetails,
+        myPicture: ''
     }
 
     private wrapperMenu: any;
@@ -185,6 +187,10 @@ export class Navbar extends React.Component<Props, State> {
     }
     componentDidMount(): void {
         document.addEventListener('mousedown', this.handleClickOutside);
+        var pic = localStorage.getItem("myPicture");
+        if (pic) {
+            this.setState({ myPicture: pic });
+        }
         api.on("userInfo", (data: userInfo) => {
             this.setState({ userLogged: data })
         })
@@ -206,6 +212,15 @@ export class Navbar extends React.Component<Props, State> {
             this.getMyAppointments();
         });
         this.getMyAppointments();
+    }
+
+    getBase64(file: any) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     }
     getMyAppointments() {
         if (api.tokenDetails.isDoctor) {
@@ -348,6 +363,43 @@ export class Navbar extends React.Component<Props, State> {
                             </MenuPanel> : null}
                             {(this.state.menuButtonOpen) ? <MenuPanel>
                                 {(this.state.userLogged) ? <UserProfileDiv>
+                                    <div style={{ width: '100%' }} >
+
+                                        <div style={{ display: 'inline-block', marginTop: '10px' }}>
+                                            {(this.state.myPicture && this.state.myPicture != '') ?
+                                                <img style={{ width: 100, height: 100 }} src={this.state.myPicture} alt="Doctor Picture" />
+                                                :
+                                                <img style={{ width: 100, height: 100 }} src={"https://www.vhv.rs/dpng/d/263-2633697_nurse-doctor-icon-png-transparent-png.png"} />
+                                            }
+
+                                        </div>
+                                        <div style={{ display: 'inline-block' }}>
+                                            <span>
+                                                <span style={{ fontWeight: 'bold' }}>Name :  </span>
+                                                {this.state.userLogged.name}</span><br />
+
+                                            <span>
+                                                <span style={{ fontWeight: 'bold' }}> Surname : </span>
+                                                {this.state.userLogged.surname}</span><br />
+                                            <span>
+                                                <span style={{ fontWeight: 'bold' }}>  Id Number : </span>
+                                                {this.state.userLogged.idNumber}</span><br />
+                                            <span>Upload your picture here</span><br />
+                                            <input type='file' onChange={(e: any) => {
+                                                this.getBase64(e.target.files[0]).then((data) => {
+                                                    var img: any = data;
+                                                    if (data !== 'error') {
+                                                        console.log(img);
+                                                        this.setState({ myPicture: img }, () => {
+                                                            localStorage.setItem("myPicture", img)
+                                                        });
+                                                    }
+                                                });
+                                            }}>
+                                            </input>
+                                        </div>
+
+                                    </div>
                                     {(this.state.tokenDetails.admin) ?
                                         <div className="AdminSection">
                                             <a onClick={() => {
@@ -355,23 +407,15 @@ export class Navbar extends React.Component<Props, State> {
                                             }}>+ Add Doctor</a>
                                         </div>
                                         : null}
-
-                                    <div className="userDetails">
-                                        <span>Name : {this.state.userLogged.name}</span>
+                                    <div>
+                                        <Button style={{ float: 'left', marginTop: '10px' }} text={'Log Out'} onClick={() => {
+                                            api.logOut().then(() => {
+                                                this.setState({ userLogged: this.tempUserLogged }, () => {
+                                                    window.location.href = '/login'
+                                                })
+                                            });
+                                        }} />
                                     </div>
-                                    <div className="userDetails">
-                                        <span>Surname : {this.state.userLogged.surname}</span><br />
-                                    </div>
-                                    <div className="userDetails">
-                                        <span>Id Number : {this.state.userLogged.idNumber}</span><br />
-                                    </div>
-                                    <Button style={{ float: 'right', marginTop: '10px' }} text={'Log Out'} onClick={() => {
-                                        api.logOut().then(() => {
-                                            this.setState({ userLogged: this.tempUserLogged }, () => {
-                                                window.location.href = '/login'
-                                            })
-                                        });
-                                    }} />
                                 </UserProfileDiv> : <a>No data</a>}
                             </MenuPanel> : null}
 
