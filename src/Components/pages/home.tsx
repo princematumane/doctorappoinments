@@ -35,10 +35,10 @@ position:fixed;
 width: 100%;
     .center{
         position: absolute;
-        top: 150px;
+        top: 100px;
         left: 150px;
         width: 80%;
-        height: 100%;
+        height: 80%;
         background: ${({ theme }) => theme.bodyAltLighter};
         border-radius: ${({ theme }) => theme.radius};
     }
@@ -355,7 +355,7 @@ export class Home extends React.Component<Props, State> {
 
                         : null}
                     <div className={"membersListing"}>
-                        <div style={{ display: 'block', width: '100%', overflow: 'auto', height: 500 }}>
+                        <div style={{ display: 'block', width: '100%', overflow: 'auto', height: 420 }}>
                             {(this.state.doctors) ?
                                 <table>
                                     <thead>
@@ -365,7 +365,7 @@ export class Home extends React.Component<Props, State> {
                                         <th>Specialiazation</th>
                                         {(api.tokenDetails.admin) ? <th>Delete || Edit</th> : null}
                                     </thead>
-                                    <tbody style={{}}>
+                                    <tbody>
                                         {(this.state.doctors.map((data, i) => {
                                             return <tr key={i + JSON.stringify(data)}>
                                                 <td onClick={() => {

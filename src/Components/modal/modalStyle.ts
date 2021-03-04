@@ -10,10 +10,10 @@ export const ModalContatiner = styled.div`
     justify-content: center;
     opacity: 0;
     transition: opacity linear 0.15s;
-    z-index: 2000;
+    z-index: 999;
     border-radius: 10px;
     width: 60%;
-    margin: 30px auto;
+    margin: 100px auto;
     &.fade-in {
          opacity: 1;
          transition: opacity linear 0.15s;

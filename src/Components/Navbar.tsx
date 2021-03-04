@@ -46,7 +46,7 @@ const NavbarMainContainer = styled.div`
     position: fixed;
     top: 0;
     width: 100%;
-    z-index:99;
+    z-index:9;
     div.logoContainer {
         height: 80px;
         overflow: hidden;
