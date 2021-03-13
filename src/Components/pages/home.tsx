@@ -140,19 +140,22 @@ export class Home extends React.Component<Props, State> {
     genderOptions: DropdownInterface[] = [{ value: 'male', option: 'Male' }, { value: 'female', option: 'Female' }];
     ddYYMM = new Date();
     componentDidMount() {
-        this.setState({ tokenDetails: api.tokenDetails }, () => {
-            console.log('props', this.state.tokenDetails, api.tokenDetails)
-            if (this.state.tokenDetails.admin) {
-                this.getAllPatient();
-            }
-        })
-        this.getDoctors();
+        var tokenDetails = localStorage.getItem('tokenDetails');
+        if (tokenDetails) {
+            this.setState({ tokenDetails: api.tokenDetails }, () => {
+                console.log('props', this.state.tokenDetails, api.tokenDetails)
+                if (this.state.tokenDetails.admin) {
+                    this.getAllPatient();
+                }
+            })
+            this.getDoctors();
+        } else {
+            window.location.href = '/login'
+        }
         api.on("tokenDetails", (tokenDetails: tokenDetails) => {
             this.setState({ tokenDetails: tokenDetails });
         });
-
         document.title = 'Home';
-
     }
 
     getDoctors() {
@@ -231,6 +234,13 @@ export class Home extends React.Component<Props, State> {
                 this.setState({ status: false });
                 this.setState({ message: '' })
             }, 5000)
+        }
+        if (this.state.tokenDetails == api.tempTokenDetails) {
+            return <Maincontainter>
+                <div>
+                    <span>This page is for logged users</span>
+                </div>
+            </Maincontainter>
         }
         return (
             <Maincontainter>
