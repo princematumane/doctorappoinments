@@ -287,6 +287,7 @@ export class Navbar extends React.Component<Props, State> {
             <NavbarMainContainer>
                 <div className='logo'>
                     {this.logo()}
+                    <span style={{ margin: 'none' }}>ddd</span>
                 </div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
                     {(this.state.userLogged.name == 'login') ?
@@ -306,7 +307,7 @@ export class Navbar extends React.Component<Props, State> {
                             }}>
                                 <FontAwesomeIcon icon={faBell} />
                             </div>
-                            <Button icon={'/unknown.png'} text={this.state.userLogged.name} onClick={() => {
+                            <Button roundimg={'/user.png'} text={this.state.userLogged.name} onClick={() => {
                                 this.setState({
                                     appointmentMenuOpen: false
                                 });

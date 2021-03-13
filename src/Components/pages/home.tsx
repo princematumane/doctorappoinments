@@ -150,7 +150,7 @@ export class Home extends React.Component<Props, State> {
             })
             this.getDoctors();
         } else {
-            window.location.href = '/login'
+            // window.location.href = '/login'
         }
         api.on("tokenDetails", (tokenDetails: tokenDetails) => {
             this.setState({ tokenDetails: tokenDetails });

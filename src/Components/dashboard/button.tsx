@@ -69,6 +69,7 @@ const ButtonStyled = styled.button<ButtonStyleProps>`
 
   div.roundimg {
         width: 30px;
+        margin-top:3px;
         height: 30px;
         border-radius: 50%;
         overflow: hidden;
