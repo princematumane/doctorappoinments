@@ -67,7 +67,9 @@ export class API extends EventEmitter {
     await localStorage.removeItem('userInfo');
     await localStorage.removeItem('tokenDetails');
     await localStorage.removeItem("myPicture");
+    await localStorage.removeItem("jwtPacket");
     this.loggedUserInfo = this.tempLoggedUserInfo;
+    this.tokenDetails = this.tempTokenDetails;
     this.bearerToken = '';
   }
 
