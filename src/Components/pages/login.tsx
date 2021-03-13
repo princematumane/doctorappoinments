@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { userInfo } from '../../api/model/Interface';
+import { ValidateIdNumber } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -49,7 +50,10 @@ interface State {
     username: string,
     password: string,
     status: boolean,
-    message: string
+    message: string,
+    isValid: boolean,
+    isValidMessage: string,
+    isPasswordValid: boolean
 }
 
 export class Login extends React.Component {
@@ -58,7 +62,10 @@ export class Login extends React.Component {
         username: '',
         password: '',
         status: false,
-        message: ''
+        message: '',
+        isValid: true,
+        isValidMessage: '',
+        isPasswordValid: true
     }
 
     componentDidMount() {
@@ -75,37 +82,65 @@ export class Login extends React.Component {
         }
     }
     logginPanel() {
+        if (this.state.message != '') {
+            setInterval(() => {
+                this.setState({ message: '' })
+            }, 4000)
+
+        }
         return (
             <>
                 <span>Id Number</span>
-                <Input onChange={(e) => {
-                    this.setState({ username: e.target.value });
+                <Input type='number' onChange={(e) => {
+                    var isValid = ValidateIdNumber(e.target.value);
+                    this.setState({ isValid }, () => {
+                        if (!isValid) {
+                            this.setState({ isValidMessage: 'invalid id number format' })
+                        } else {
+                            this.setState({ isValidMessage: '' }, () => {
+                                this.setState({ username: e.target.value }, () => {
+                                    //console.log(this.state.username)
+                                });
+                            })
+                        }
+                    })
                 }} />
+                {(this.state.isValidMessage != '') ? <> <span style={{ fontSize: 10, padding: 10, color: 'red' }}>{this.state.isValidMessage}</span><br /></> : null}
                 <span>Password</span>
                 <Input type={'password'} onChange={(e) => {
-                    this.setState({ password: e.target.value }, () => {
-                        console.log(this.state.password)
-                    });
+                    if (e.target.value.length < 5) {
+                        this.setState({ isPasswordValid: false })
+                    } else {
+                        this.setState({ isPasswordValid: true })
+                        this.setState({ password: e.target.value }, () => {
+                        });
+                    }
                 }} /><br />
-
+                {(!this.state.isPasswordValid) ? <> <span style={{ fontSize: 10, padding: 10, color: 'red' }}>Password minimum requiremets are not met!</span><br /></> : null}
                 {(this.state.message != '') ?
-                    <div style={{ padding: 10, borderRadius: 5, backgroundColor: (this.state.status == true) ? 'green' : 'red' }}>
+                    <div style={{ padding: 10, marginTop: 20, borderRadius: 5, backgroundColor: (this.state.status == true) ? 'green' : 'red' }}>
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
 
                 <div className="loginAndRegister">
                     <Button text='Login' onClick={() => {
-                        api.Login(this.state.username, this.state.password).then((response: any) => {
-                            this.setState({ status: response.status }, () => {
-                                this.setState({ message: response.message });
-                                if (this.state.status) {
-                                    api.storeUserInfo(response.data).then(() => {
-                                        window.location.href = "/home";
-                                    })
-                                }
+                        if (this.state.isPasswordValid && this.state.isValid && this.state.password != '' && this.state.username != '') {
+                            api.Login(this.state.username, this.state.password).then((response: any) => {
+                                this.setState({ status: response.status }, () => {
+                                    this.setState({ message: response.message });
+                                    if (this.state.status) {
+                                        api.storeUserInfo(response.data).then(() => {
+                                            window.location.href = "/home";
+                                        })
+                                    }
+                                })
                             })
-                        })
+                        } else {
+                            this.setState({ status: false }, () => {
+                                this.setState({ message: 'Invalid user details or format' });
+                            })
+                        }
                     }} />
                     <span>
                         Create file <a onClick={() => {
