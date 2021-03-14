@@ -27,6 +27,7 @@ export interface Patient {
     surname: string,
     picture: string,
     password: string,
+    userId?: any
 }
 
 export interface userInfo {

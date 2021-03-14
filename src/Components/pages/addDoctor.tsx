@@ -1,3 +1,5 @@
+import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
@@ -83,6 +85,7 @@ export class AddDoctor extends React.Component {
             var d = JSON.parse(td);
             this.setState({ tokenDetails: d });
         }
+        document.title = 'Add Doctor';
     }
     componentWillUnmount(): void {
         api.removeAllListeners('tokenDetails');
@@ -111,9 +114,11 @@ export class AddDoctor extends React.Component {
         }
         return (
             <>
-                <Button text={'< Back'} onClick={() => {
-                    window.location.href = "/login";
-                }} />
+                <div onClick={() => {
+                    window.location.href = "/home";
+                }}>
+                    <FontAwesomeIcon icon={faArrowCircleLeft} /> Back
+                </div>
                 <h1 style={{ textAlign: 'center' }}>Add Doctor</h1>
                 <span>first Name</span>
                 <Input onChange={(e: any) => {

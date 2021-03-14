@@ -112,7 +112,7 @@ export class EditPatientFile extends React.Component {
 
 
     componentDidMount() {
-
+        document.title = 'Patients';
     }
     handleUserInput(e: any) {
         const name = e.target.name;
@@ -244,7 +244,7 @@ export class EditPatientFile extends React.Component {
                 {(!this.state.areRequiremetsMet) ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
 
-                    <Button disabled={!this.state.areRequiremetsMet} style={{ width: '102%' }} text='Create File' onClick={() => {
+                    <Button disabled={!this.state.areRequiremetsMet} style={{ width: '102%' }} text='Update' onClick={() => {
                         Object.keys(this.state.formErrors).map((fieldName, i) => {
                             if (this.state.formErrors[fieldName].length > 0) {
                                 this.setState({ status: false }, () => {
@@ -254,12 +254,12 @@ export class EditPatientFile extends React.Component {
                             }
                         })
                         if (this.state.areRequiremetsMet) {
-                            api.AddPatient(this.state.personDetails, (success) => {
+                            api.updateDetailsPatient(this.state.personDetails, (success) => {
                                 console.log(success);
                                 this.setState({ status: success.status }, () => {
                                     this.setState({ message: success.message })
                                     if (this.state.status) {
-                                        window.location.href = "/login";
+                                        window.location.href = "/";
                                     }
                                 })
 

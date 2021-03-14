@@ -249,6 +249,29 @@ export class API extends EventEmitter {
       });
   }
 
+  updateDetailsPatient(patientToAdd: Patient,
+    success: (success?: any) => void,
+    error: (error?: any) => void) {
+    const requestOptions = {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + this.bearerToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(patientToAdd) //JSON.Parse
+    };
+    const url = this.hostURL + '/api/Patient/updateDetails';
+    fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        success(result)
+      })
+      .catch((err) => {
+        console.log(err)
+        error(err);
+      });
+  }
+
   AddPatient(patientToAdd: Patient,
     success: (success?: any) => void,
     error: (error?: any) => void) {
