@@ -9,6 +9,7 @@ import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { dateArranger } from '../helpers';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
@@ -53,8 +54,16 @@ const NavbarMainContainer = styled.div`
         overflow: hidden;
         border-top-left-radius: ${({ theme }) => theme.radius};
         padding: 0; margin: 0; white-space: nowrap;
+        display:inline-block;
     }
-        
+    #logo {
+        display: inline-block;
+        height: 100%;
+        padding-left: 20px;
+        margin-top:30px;
+        font-weight: 1000;
+        color: ${({ theme }) => theme.gradient};
+      }
     div.rightContainer{
         position: absolute;
         flex: 0; white-space: nowrap;
@@ -266,29 +275,14 @@ export class Navbar extends React.Component<Props, State> {
             </Logo>
         </div >
     }
-    dateArranger(d: string) {
-        let date = new Date(d);
-        let year = date.getFullYear();
-        var month: any = date.getMonth() + 1;
-        let dt: any = date.getDate();
 
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-        if (dt < 10) {
-            dt = '0' + dt;
-        }
-        if (month < 10) {
-            month = '0' + month;
-        }
-        return year + '-' + month + '-' + dt + ' ' + hours + ':' + minutes;
-    }
     render() {
         return (
             <NavbarMainContainer>
                 <div className='logo'>
                     {this.logo()}
-                    <span style={{ margin: 'none' }}>ddd</span>
                 </div>
+                <div id="logo">SAVING LIFE HOSPITAL</div>
                 <div className='rightContainer' style={{ display: 'inline-flex' }}>
                     {(this.state.userLogged.name == 'login') ?
                         <Button roundimg={'/unknown.png'} text={this.state.userLogged.name} onClick={() => {
@@ -326,11 +320,11 @@ export class Navbar extends React.Component<Props, State> {
                                                     {(this.state.tokenDetails.isDoctor) ?
                                                         <div>
                                                             <span> Appointment with  {data.patientDetails.name} {data.patientDetails.surname} </span><br />
-                                                            <span> at {this.dateArranger(data.dateAndTime)} for {data.description}</span>
+                                                            <span> at {dateArranger(data.dateAndTime)} for {data.description}</span>
                                                         </div> :
                                                         <div>
                                                             <span>Appointment with  {data.doctorDetails.name} {data.doctorDetails.surname} </span><br />
-                                                            <span> at {this.dateArranger(data.dateAndTime)} for {data.description}</span>
+                                                            <span> at {dateArranger(data.dateAndTime)} for {data.description}</span>
                                                         </div>
                                                     }
                                                     <span style={{ fontWeight: 'bold' }}>Appointment Status : {data.confirmed}</span>

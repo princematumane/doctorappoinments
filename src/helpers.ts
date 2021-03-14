@@ -34,3 +34,20 @@ export function validEmailAddress(email: string): boolean {
 function isNumber(n: any) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+export function dateArranger(d: string) {
+    let date = new Date(d);
+    let year = date.getFullYear();
+    var month: any = date.getMonth() + 1;
+    let dt: any = date.getDate();
+
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    return year + '-' + month + '-' + dt + ' ' + hours + ':' + minutes;
+}
