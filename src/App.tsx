@@ -11,6 +11,9 @@ import { Login } from "./Components/pages/login";
 import { Register } from "./Components/pages/register";
 import { api } from "./api/api";
 import { AddDoctor } from "./Components/pages/addDoctor";
+import { EditPatientFile } from "./Components/pages/editPatientFile";
+import ManagePatients from "./Components/pages/managePatients";
+import Reports from "./Components/pages/reports";
 
 interface Props { }
 interface State {
@@ -50,6 +53,9 @@ class App extends React.Component<Props, State> {
                             <Route exact path='/login' component={Login} />
                             <Route exact path='/register' component={Register} />
                             <Route exact path='/AddDoctor' component={AddDoctor} />
+                            <Route exact path='/editFile' component={EditPatientFile} />
+                            <Route exact path='/reports' component={Reports} />
+                            <Route exact path='/managePatients' component={ManagePatients} />
                             <Route>
                                 Error 404 Not found
                                 </Route>

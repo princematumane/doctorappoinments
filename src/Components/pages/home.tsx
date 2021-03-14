@@ -150,7 +150,7 @@ export class Home extends React.Component<Props, State> {
             })
             this.getDoctors();
         } else {
-            // window.location.href = '/login'
+            window.location.href = '/login';
         }
         api.on("tokenDetails", (tokenDetails: tokenDetails) => {
             this.setState({ tokenDetails: tokenDetails });
@@ -160,7 +160,6 @@ export class Home extends React.Component<Props, State> {
 
     getDoctors() {
         api.getAllDoctors().then((data) => {
-            //console.log(data)
             this.setState({ doctors: data.data }, () => {
                 this.setState({ filteredDoctors: this.state.doctors });
             })
@@ -172,6 +171,7 @@ export class Home extends React.Component<Props, State> {
         console.log("xxxxxxx patient")
         api.getAllPatients().then((data) => {
             console.log("xxxxxxx patient", data)
+            var docs = this.state.filteredDoctors;
             // this.setState({ doctors: data.data }, () => {
             //     this.setState({ filteredDoctors: this.state.doctors });
             // })

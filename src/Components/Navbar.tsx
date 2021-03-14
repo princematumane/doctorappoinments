@@ -8,8 +8,9 @@ import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheck, faPowerOff, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { dateArranger } from '../helpers';
+import { MenuItemObject } from './menuitem';
 interface State {
     userLogged: userInfo,
     menuButtonOpen: boolean,
@@ -166,6 +167,17 @@ const MenuPanel = styled.div`
         border-style: inset;
         border-width: 1px;
      }
+     .logOutButton{
+            cursor: pointer;
+            text-align: center;
+            margin-top: 30px;
+            background-color: #319997; 
+            padding: 10px;
+            border-radius: 10px;
+     }
+     .logOutButton:hover{
+         opacity:0.7;
+     }
 `;
 export class Navbar extends React.Component<Props, State> {
 
@@ -275,7 +287,87 @@ export class Navbar extends React.Component<Props, State> {
             </Logo>
         </div >
     }
+    menuBtn() {
+        const buttonText = this.state.userLogged.name;
+        return <div ref={this.setWrapperMenu} style={{ position: 'relative', zIndex: 1 }}>
+            {/* <Button
+                spot={true}
+                roundimg={this.state.myPicture}
+                text={buttonText}
+                onClick={() => {
+                    this.setState({
+                        menuButtonOpen: !this.state.menuButtonOpen
+                    });
+                }} /> */}
+            {
+                (this.state.menuButtonOpen) && <MenuPanel>
+                    {(this.state.userLogged) ? <UserProfileDiv>
+                        <div style={{ width: '100%' }} >
 
+                            <div style={{ display: 'inline-block', marginTop: '10px' }}>
+                                {(this.state.myPicture && this.state.myPicture != '') ?
+                                    <img style={{ width: 100, height: 100 }} src={this.state.myPicture} alt="Doctor Picture" />
+                                    :
+                                    <img style={{ width: 100, height: 100 }} src={"https://www.vhv.rs/dpng/d/263-2633697_nurse-doctor-icon-png-transparent-png.png"} />
+                                }
+
+                            </div>
+                            <div style={{ display: 'inline-block' }}>
+                                <span>
+                                    <span style={{ fontWeight: 'bold' }}>Name :  </span>
+                                    {this.state.userLogged.name}</span><br />
+
+                                <span>
+                                    <span style={{ fontWeight: 'bold' }}> Surname : </span>
+                                    {this.state.userLogged.surname}</span><br />
+                                <span>
+                                    <span style={{ fontWeight: 'bold' }}>  Id Number : </span>
+                                    {this.state.userLogged.idNumber}</span><br />
+                                <span>Upload your picture here</span><br />
+                                <input type='file' onChange={(e: any) => {
+                                    this.getBase64(e.target.files[0]).then((data) => {
+                                        var img: any = data;
+                                        if (data !== 'error') {
+                                            console.log(img);
+                                            this.setState({ myPicture: img }, () => {
+                                                localStorage.setItem("myPicture", img)
+                                            });
+                                        }
+                                    });
+                                }}>
+                                </input>
+                            </div>
+                        </div>
+                    </UserProfileDiv> : <a>No data</a>}
+
+                    {(this.state.tokenDetails.admin) ? <>
+                        <MenuItemObject icon='fas fa-user' title='Add Doctor' onClick={() => {
+                            window.location.href = '/addDoctor';
+                        }} />
+                        <MenuItemObject icon='fas fa-user' title='Manage Patient' onClick={() => {
+                            window.location.href = '/managePatients';
+                        }} />
+                        <MenuItemObject icon='fas fa-user' title='Reports' onClick={() => {
+                            window.location.href = '/reports';
+                        }} />
+                    </>
+                        : null}
+
+                    <div className='logOutButton' onClick={() => {
+                        api.logOut().then(() => {
+                            this.setState({ userLogged: this.tempUserLogged }, () => {
+                                window.location.href = '/login'
+                            })
+                        });
+                    }}>
+                        <FontAwesomeIcon icon={faPowerOff} /> Log Out
+                    </div>
+                    <hr />
+                    <hr />
+                </MenuPanel>
+            }
+        </div>
+    }
     render() {
         return (
             <NavbarMainContainer>
@@ -310,7 +402,7 @@ export class Navbar extends React.Component<Props, State> {
                                 });
                                 // this.setState({userNameLogged:'login'})
                             }} />
-
+                            {this.menuBtn()}
                             {(this.state.appointmentMenuOpen) ? <MenuPanel>
                                 {(this.state.userLogged) ? <NotificationDiv>
                                     <div>
@@ -356,64 +448,6 @@ export class Navbar extends React.Component<Props, State> {
                                     </div>
                                 </NotificationDiv> : <a>No data</a>}
                             </MenuPanel> : null}
-                            {(this.state.menuButtonOpen) ? <MenuPanel>
-                                {(this.state.userLogged) ? <UserProfileDiv>
-                                    <div style={{ width: '100%' }} >
-
-                                        <div style={{ display: 'inline-block', marginTop: '10px' }}>
-                                            {(this.state.myPicture && this.state.myPicture != '') ?
-                                                <img style={{ width: 100, height: 100 }} src={this.state.myPicture} alt="Doctor Picture" />
-                                                :
-                                                <img style={{ width: 100, height: 100 }} src={"https://www.vhv.rs/dpng/d/263-2633697_nurse-doctor-icon-png-transparent-png.png"} />
-                                            }
-
-                                        </div>
-                                        <div style={{ display: 'inline-block' }}>
-                                            <span>
-                                                <span style={{ fontWeight: 'bold' }}>Name :  </span>
-                                                {this.state.userLogged.name}</span><br />
-
-                                            <span>
-                                                <span style={{ fontWeight: 'bold' }}> Surname : </span>
-                                                {this.state.userLogged.surname}</span><br />
-                                            <span>
-                                                <span style={{ fontWeight: 'bold' }}>  Id Number : </span>
-                                                {this.state.userLogged.idNumber}</span><br />
-                                            <span>Upload your picture here</span><br />
-                                            <input type='file' onChange={(e: any) => {
-                                                this.getBase64(e.target.files[0]).then((data) => {
-                                                    var img: any = data;
-                                                    if (data !== 'error') {
-                                                        console.log(img);
-                                                        this.setState({ myPicture: img }, () => {
-                                                            localStorage.setItem("myPicture", img)
-                                                        });
-                                                    }
-                                                });
-                                            }}>
-                                            </input>
-                                        </div>
-
-                                    </div>
-                                    {(this.state.tokenDetails.admin) ?
-                                        <div className="AdminSection">
-                                            <a onClick={() => {
-                                                window.location.href = '/addDoctor'
-                                            }}>+ Add Doctor</a>
-                                        </div>
-                                        : null}
-                                    <div>
-                                        <Button style={{ float: 'left', marginTop: '10px' }} text={'Log Out'} onClick={() => {
-                                            api.logOut().then(() => {
-                                                this.setState({ userLogged: this.tempUserLogged }, () => {
-                                                    window.location.href = '/login'
-                                                })
-                                            });
-                                        }} />
-                                    </div>
-                                </UserProfileDiv> : <a>No data</a>}
-                            </MenuPanel> : null}
-
                         </>
                     }
                 </div>
