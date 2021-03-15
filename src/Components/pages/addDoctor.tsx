@@ -287,9 +287,40 @@ export class AddDoctor extends React.Component {
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
-                {(!this.state.areRequiremetsMet) ?
+
+                <Button style={{ width: '102%' }} text='Submit' onClick={() => {
+                    Object.keys(this.state.formErrors).map((fieldName, i) => {
+                        if (this.state.formErrors[fieldName].length > 0) {
+                            this.setState({ status: false }, () => {
+                                this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
+                            })
+                            this.setState({ areRequiremetsMet: false })
+                        }
+                    })
+                    console.log(this.state.personDetails)
+                    api.AddDoctor(this.state.personDetails, (success) => {
+                        console.log(success);
+                        this.setState({ status: success.status }, () => {
+                            this.setState({ message: success.message })
+                            if (this.state.status) {
+                                window.location.href = "/home";
+                            }
+                        })
+
+                    }, err => { })
+                }} />
+
+                {/* {(!this.state.areRequiremetsMet) ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
                     <Button style={{ width: '102%' }} text='Submit' onClick={() => {
+                        Object.keys(this.state.formErrors).map((fieldName, i) => {
+                            if (this.state.formErrors[fieldName].length > 0) {
+                                this.setState({ status: false }, () => {
+                                    this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
+                                })
+                                this.setState({ areRequiremetsMet: false })
+                            }
+                        })
                         console.log(this.state.personDetails)
                         api.AddDoctor(this.state.personDetails, (success) => {
                             console.log(success);
@@ -301,7 +332,7 @@ export class AddDoctor extends React.Component {
                             })
 
                         }, err => { })
-                    }} />}
+                    }} />} */}
 
             </>
         );

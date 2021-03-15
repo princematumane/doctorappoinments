@@ -241,7 +241,37 @@ export class Register extends React.Component {
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
-                {(!this.state.areRequiremetsMet) ?
+
+
+
+
+
+                <Button disabled={this.state.areRequiremetsMet} style={{ width: '102%' }} text='Create File' onClick={() => {
+                    Object.keys(this.state.formErrors).map((fieldName, i) => {
+                        if (this.state.formErrors[fieldName].length > 0) {
+                            this.setState({ status: false }, () => {
+                                this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
+                            })
+                            this.setState({ areRequiremetsMet: false })
+                        }
+                    })
+                    if (true) {
+                        api.AddPatient(this.state.personDetails, (success) => {
+                            console.log(success);
+                            this.setState({ status: success.status }, () => {
+                                this.setState({ message: success.message })
+                                if (this.state.status) {
+                                    window.location.href = "/login";
+                                }
+                            })
+
+                        }, err => { })
+                    }
+
+
+                }} />
+
+                {/* {(!this.state.areRequiremetsMet) ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
 
                     <Button disabled={!this.state.areRequiremetsMet} style={{ width: '102%' }} text='Create File' onClick={() => {
@@ -267,7 +297,7 @@ export class Register extends React.Component {
                         }
 
 
-                    }} />}
+                    }} />} */}
 
             </div>
         );
