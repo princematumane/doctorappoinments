@@ -340,6 +340,11 @@ export class Navbar extends React.Component<Props, State> {
                         </div>
                     </UserProfileDiv> : <a>No data</a>}
 
+                    {(this.state.tokenDetails.admin == 'false' && this.state.tokenDetails.isDoctor == 'false') ?
+                        <MenuItemObject icon='fas fa-user' title='Edit Your File' onClick={() => {
+                            window.location.href = '/editFile';
+                        }} />
+                        : null}
                     {(this.state.tokenDetails.admin) ? <>
                         <MenuItemObject icon='fas fa-user' title='Add Doctor' onClick={() => {
                             window.location.href = '/addDoctor';

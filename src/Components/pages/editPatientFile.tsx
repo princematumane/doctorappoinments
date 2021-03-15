@@ -195,7 +195,7 @@ export class EditPatientFile extends React.Component {
                 }}>
                     <FontAwesomeIcon icon={faArrowCircleLeft} /> Back
                 </div>
-                <h1 style={{ textAlign: 'center' }}>Create your file</h1>
+                <h1 style={{ textAlign: 'center' }}>Edit your file</h1>
 
                 <div className='formErrors'>
                     <span style={{ fontSize: 10, padding: 10, color: 'red' }}>
@@ -215,7 +215,7 @@ export class EditPatientFile extends React.Component {
                 <span>surname</span>
                 <Input name='surname' onChange={(event) => this.handleUserInput(event)} />
                 <span>ID Number</span>
-                <Input name='idNumber' type={'number'} onChange={(event) => this.handleUserInput(event)} />
+                <Input disabled={true} name='idNumber' type={'number'} onChange={(event) => this.handleUserInput(event)} />
                 <span>Phone Number</span>
                 <Input name='phoneNumber' type='number' onChange={(event) => this.handleUserInput(event)} />
                 <span>email</span>

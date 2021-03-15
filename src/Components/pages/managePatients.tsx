@@ -307,16 +307,17 @@ export class ManagePatients extends React.Component<Props, State> {
                             {(this.state.patients) ?
                                 <table>
                                     <thead>
-                                        <th></th>
+                                        {/* <th></th> */}
                                         <th>Name</th>
                                         <th>Surname</th>
+                                        <th>Id number</th>
                                         {(api.tokenDetails.admin) ? <th>Delete || Edit</th> : null}
                                     </thead>
                                     <tbody>
                                         {(this.state.patients.map((data, i) => {
                                             console.log(data)
                                             return <tr key={i + JSON.stringify(data)}>
-                                                <td onClick={() => {
+                                                {/* <td onClick={() => {
                                                     // this.setDoctorToBook(data);
                                                 }}>
 
@@ -326,16 +327,17 @@ export class ManagePatients extends React.Component<Props, State> {
                                                         <img style={{ width: 50, height: 50 }} src={data.picture} alt="Patient Picture" />
                                                     }
 
-                                                </td>
+                                                </td> */}
                                                 <td onClick={() => {
                                                     // this.setDoctorToBook(data);
                                                 }}>{data.firstName}</td>
                                                 <td onClick={() => {
                                                     //this.setDoctorToBook(data);
                                                 }}>{data.surname}</td>
+                                                <td>{data.idNumber}</td>
                                                 {(api.tokenDetails.admin) ? <td style={{ textAlign: 'center' }}>
                                                     <FontAwesomeIcon style={{ zIndex: 99, marginRight: 15 }} icon={faTrash} onClick={() => {
-                                                        api.deleteDetailsDoctor(data.userId).then((data) => {
+                                                        api.deleteDetailsPatient(data.userId).then((data) => {
                                                             this.getAllPatient();
                                                         })
                                                     }} />
@@ -353,7 +355,7 @@ export class ManagePatients extends React.Component<Props, State> {
                                         }))}
                                     </tbody>
                                 </table>
-                                : <span>No doctors</span>}
+                                : <span>No Patients</span>}
                         </div>
                     </div>
 

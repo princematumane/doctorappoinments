@@ -4,6 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { Doctor, Patient, tokenDetails } from '../../api/model/Interface';
+import { ValidateIdNumber, ValidateSouthAfricanPhonenumber, validEmailAddress } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -50,7 +51,19 @@ interface State {
     personDetails: Doctor,
     status: boolean,
     message: string,
-    tokenDetails: tokenDetails
+    tokenDetails: tokenDetails,
+    hospitalAddressValid: boolean,
+    emailValid: boolean,
+    genderValid: boolean,
+    firstNameValid: boolean,
+    idNumberValid: boolean,
+    passwordValid: boolean,
+    phoneNumberValid: boolean,
+    surnameValid: boolean,
+    pictureValid: boolean,
+    confirmPasswordValid: boolean,
+    formErrors: any,
+    areRequiremetsMet: boolean
 }
 
 
@@ -73,7 +86,30 @@ export class AddDoctor extends React.Component {
         personDetails: this.tempPersonDetails,
         status: false,
         message: '',
-        tokenDetails: api.tokenDetails
+        tokenDetails: api.tokenDetails,
+        hospitalAddressValid: false,
+        emailValid: false,
+        genderValid: false,
+        firstNameValid: false,
+        idNumberValid: false,
+        passwordValid: false,
+        surnameValid: false,
+        phoneNumberValid: false,
+        pictureValid: false,
+        confirmPasswordValid: false,
+        areRequiremetsMet: false,
+        formErrors: {
+            address: "",
+            email: "",
+            firstName: '',
+            gender: '',
+            idNumber: 0,
+            password: '',
+            phoneNumber: '',
+            picture: "",
+            surname: '',
+            confirmPassword: ''
+        }
     }
     componentDidMount() {
         api.on('tokenDetails', (data: tokenDetails) => {
@@ -103,6 +139,82 @@ export class AddDoctor extends React.Component {
         };
         return 'error';
     }
+
+
+    handleUserInput(e: any) {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({ personDetails: { ...this.state.personDetails, [name]: value } }, () => {
+            this.validateField(name, value);
+        })
+    }
+    validateField(fieldName: any, value: any) {
+        let fieldValidationErrors = this.state.formErrors;
+        let emailValid = this.state.emailValid;
+        let passwordValid = this.state.passwordValid;
+        let hospitalAddressValid = this.state.hospitalAddressValid;
+        let firstNameValid = this.state.firstNameValid;
+        let idNumberValid = this.state.idNumberValid;
+        let surnameValid = this.state.surnameValid;
+        let phoneNumberValid = this.state.phoneNumberValid;
+        let confirmPasswordValid = this.state.confirmPasswordValid;
+        switch (fieldName) {
+            case 'email':
+                emailValid = validEmailAddress(value);
+                fieldValidationErrors.email = emailValid ? '' : ' is invalid';
+                break;
+            case 'password':
+                passwordValid = value.length >= 5;
+                fieldValidationErrors.password = passwordValid ? '' : ' is too short';
+                break;
+            case 'confirmPassword':
+                confirmPasswordValid = value.length >= 5 && this.state.personDetails.password == value;
+                fieldValidationErrors.confirmPassword = confirmPasswordValid ? '' : ' is too short or does not match';
+                break;
+            case 'hospitalAddress':
+                hospitalAddressValid = value.length >= 5;
+                fieldValidationErrors.hospitalAddress = hospitalAddressValid ? '' : ' is too short';
+                break;
+            case 'phoneNumber':
+                phoneNumberValid = ValidateSouthAfricanPhonenumber(value);
+                fieldValidationErrors.phoneNumber = phoneNumberValid ? '' : ' Not valid phone number format';
+                break;
+            case 'surname':
+                surnameValid = value.length >= 3;
+                fieldValidationErrors.surname = surnameValid ? '' : ' is too short';
+                break;
+            case 'firstName':
+                firstNameValid = value.length >= 2;
+                fieldValidationErrors.firstName = firstNameValid ? '' : ' is too short';
+                break;
+            case 'idNumber':
+                idNumberValid = ValidateIdNumber(value);
+                fieldValidationErrors.idNumber = idNumberValid ? '' : 'Not a valid id number';
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            formErrors: fieldValidationErrors,
+            emailValid: emailValid,
+            hospitalAddressValid: hospitalAddressValid,
+            firstNameValid: firstNameValid,
+            idNumberValid: idNumberValid,
+            surnameValid: surnameValid,
+            phoneNumberValid: phoneNumberValid,
+            confirmPasswordValid: confirmPasswordValid,
+            passwordValid: passwordValid
+        }, this.validateForm);
+    }
+
+    validateForm() {
+        this.setState({
+            formValid: this.state.emailValid
+                && this.state.passwordValid && this.state.hospitalAddressValid && this.state.firstNameValid &&
+                this.state.idNumberValid && this.state.phoneNumberValid && this.state.surnameValid
+        });
+    }
+
     logginPanel() {
         if (!this.state.tokenDetails.admin) {
             // setTimeout(() => {
@@ -120,40 +232,38 @@ export class AddDoctor extends React.Component {
                     <FontAwesomeIcon icon={faArrowCircleLeft} /> Back
                 </div>
                 <h1 style={{ textAlign: 'center' }}>Add Doctor</h1>
+                <div className='formErrors'>
+                    <span style={{ fontSize: 10, padding: 10, color: 'red' }}>
+                        {Object.keys(this.state.formErrors).map((fieldName, i) => {
+                            if (this.state.formErrors[fieldName].length > 0) {
+                                return (
+                                    <p key={i}>{fieldName} {this.state.formErrors[fieldName]}</p>
+                                )
+                            } else {
+                                return '';
+                            }
+                        })}
+                    </span>
+                </div>
                 <span>first Name</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, firstName: e.target.value } })
-                }} />
+                <Input name='firstName' onChange={(event) => this.handleUserInput(event)} />
                 <span>surname</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, surname: e.target.value } })
-                }} />
+                <Input name='surname' onChange={(event) => this.handleUserInput(event)} />
                 <span>ID Number</span>
-                <Input type={'number'} onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, idNumber: e.target.value } })
-                }} />
+                <Input name='idNumber' type={'number'} onChange={(event) => this.handleUserInput(event)} />
                 <span>Phone Number</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, phoneNumber: e.target.value } })
-                }} />
+                <Input name='phoneNumber' type='number' onChange={(event) => this.handleUserInput(event)} />
+                <span>email</span>
+                <Input name='email' onChange={(event) => this.handleUserInput(event)} />
+                <span>Address</span>
+                <Input name='hospitalAddress' onChange={(event) => this.handleUserInput(event)} />
+                <span>Password</span>
+                <Input name='password' onChange={(event) => this.handleUserInput(event)} />
                 <span>Specialiazation</span>
-                <Input placeholder={'dentist,Psychiatrist,Dermatologist'} onChange={(e: any) => {
+                <Input name={'Specialiazation'} placeholder={'dentist,Psychiatrist,Dermatologist'} onChange={(e: any) => {
                     let sp = e.target.value.split(',');
                     this.setState({ personDetails: { ...this.state.personDetails, specialiazation: sp } })
                 }} />
-                <span>email</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, email: e.target.value } })
-                }} />
-                <span>Address</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, hospitalAddress: e.target.value } })
-                }} />
-                <span>Password</span>
-                <Input onChange={(e: any) => {
-                    this.setState({ personDetails: { ...this.state.personDetails, password: e.target.value } })
-                }} />
-
                 <span>Picture</span>
                 <Input type={'file'} onChange={(e: any) => {
                     this.getBase64(e).then((data) => {
@@ -177,19 +287,21 @@ export class AddDoctor extends React.Component {
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
-                <Button style={{ width: '102%' }} text='Submit' onClick={() => {
-                    console.log(this.state.personDetails)
-                    api.AddDoctor(this.state.personDetails, (success) => {
-                        console.log(success);
-                        this.setState({ status: success.status }, () => {
-                            this.setState({ message: success.message })
-                            if (this.state.status) {
-                                window.location.href = "/home";
-                            }
-                        })
+                {(!this.state.areRequiremetsMet) ?
+                    <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
+                    <Button style={{ width: '102%' }} text='Submit' onClick={() => {
+                        console.log(this.state.personDetails)
+                        api.AddDoctor(this.state.personDetails, (success) => {
+                            console.log(success);
+                            this.setState({ status: success.status }, () => {
+                                this.setState({ message: success.message })
+                                if (this.state.status) {
+                                    window.location.href = "/home";
+                                }
+                            })
 
-                    }, err => { })
-                }} />
+                        }, err => { })
+                    }} />}
 
             </>
         );
