@@ -229,6 +229,19 @@ export class Home extends React.Component<Props, State> {
     }
     render() {
 
+        var today: any = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+
         if (this.state.status) {
             setTimeout(() => {
                 this.setState({ status: false });
@@ -271,7 +284,7 @@ export class Home extends React.Component<Props, State> {
                             <div className="doctorDetails">
                                 <span>Choose date</span>
                                 <div style={{ display: 'inline' }}>
-                                    <Input type={'date'} onChange={(e) => {
+                                    <Input type={'date'} min={today} onChange={(e) => {
                                         this.ddYYMM = new Date(e.target.value);
                                     }} />
                                     <Input type={'time'} onChange={(e) => {
