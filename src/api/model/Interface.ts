@@ -1,5 +1,5 @@
 export interface CloudAppResponse<T> {
-    isSuccessful: boolean;
+    status: boolean;
     message: string;
     data: T;
 }

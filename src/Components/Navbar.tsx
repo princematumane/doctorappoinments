@@ -289,7 +289,7 @@ export class Navbar extends React.Component<Props, State> {
     }
     menuBtn() {
         const buttonText = this.state.userLogged.name;
-        return <div ref={this.setWrapperMenu} style={{ position: 'relative', zIndex: 1 }}>
+        return <div ref={this.wrapperMenu} style={{ position: 'relative', zIndex: 1 }}>
             {/* <Button
                 spot={true}
                 roundimg={this.state.myPicture}
@@ -340,9 +340,10 @@ export class Navbar extends React.Component<Props, State> {
                         </div>
                     </UserProfileDiv> : <a>No data</a>}
 
-                    {(this.state.tokenDetails.admin == 'false' && this.state.tokenDetails.isDoctor == 'false') ?
+                    {console.log(this.state.tokenDetails, this.state.tokenDetails.isDoctor)}
+                    {(!this.state.tokenDetails.admin && !this.state.tokenDetails.isDoctor) ?
                         <MenuItemObject icon='fas fa-user' title='Edit Your File' onClick={() => {
-                            window.location.href = '/editFile';
+                            window.location.href = '/editFile/' + this.state.tokenDetails.a;
                         }} />
                         : null}
                     {(this.state.tokenDetails.admin) ? <>

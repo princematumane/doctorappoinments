@@ -53,7 +53,7 @@ class App extends React.Component<Props, State> {
                             <Route exact path='/login' component={Login} />
                             <Route exact path='/register' component={Register} />
                             <Route exact path='/AddDoctor' component={AddDoctor} />
-                            <Route exact path='/editFile' component={EditPatientFile} />
+                            <Route exact path='/editFile/:id' component={EditPatientFile} />
                             <Route exact path='/reports' component={Reports} />
                             <Route exact path='/managePatients' component={ManagePatients} />
                             <Route>

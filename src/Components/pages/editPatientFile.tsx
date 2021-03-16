@@ -113,6 +113,17 @@ export class EditPatientFile extends React.Component {
 
     componentDidMount() {
         document.title = 'Patients';
+        const url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        console.log('xxx', id);
+        var p = api.getDetailsPatient().then((data) => {
+            console.log(data);
+            if (data.status) {
+                this.setState({ personDetails: data.data }, () => {
+                    console.log(this.state.personDetails);
+                })
+            }
+        })
     }
     handleUserInput(e: any) {
         const name = e.target.name;
@@ -211,19 +222,19 @@ export class EditPatientFile extends React.Component {
                     </span>
                 </div>
                 <span>first Name</span>
-                <Input name='firstName' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.firstName} name='firstName' onChange={(event) => this.handleUserInput(event)} />
                 <span>surname</span>
-                <Input name='surname' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.surname} name='surname' onChange={(event) => this.handleUserInput(event)} />
                 <span>ID Number</span>
-                <Input disabled={true} name='idNumber' type={'number'} onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.idNumber} disabled={true} name='idNumber' type={'number'} onChange={(event) => this.handleUserInput(event)} />
                 <span>Phone Number</span>
-                <Input name='phoneNumber' type='number' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.phoneNumber} name='phoneNumber' type='number' onChange={(event) => this.handleUserInput(event)} />
                 <span>email</span>
-                <Input name='email' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.email} name='email' onChange={(event) => this.handleUserInput(event)} />
                 <span>Address</span>
-                <Input name='address' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.address} name='address' onChange={(event) => this.handleUserInput(event)} />
                 <span>Password</span>
-                <Input name='password' onChange={(event) => this.handleUserInput(event)} />
+                <Input value={this.state.personDetails.password} name='password' onChange={(event) => this.handleUserInput(event)} />
 
                 <span>confirm Password</span>
                 <Input name='confirmPassword' onChange={(event) => this.handleUserInput(event)} />
@@ -241,6 +252,17 @@ export class EditPatientFile extends React.Component {
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
+                <Button disabled={!this.state.areRequiremetsMet} style={{ width: '102%' }} text='Update' onClick={() => {
+                    api.updateDetailsPatient(this.state.personDetails, (success) => {
+                        this.setState({ status: success.status }, () => {
+                            this.setState({ message: success.message })
+                            if (this.state.status) {
+                                window.location.href = "/";
+                            }
+                        })
+
+                    }, err => { })
+                }} />
                 {(!this.state.areRequiremetsMet) ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
 

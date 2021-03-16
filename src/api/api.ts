@@ -183,6 +183,19 @@ export class API extends EventEmitter {
       return err
     })
   }
+  async getDetailsPatient(): Promise<CloudAppResponse<any>> {
+    return await fetch(api.hostURL + '/api/Patient/getDetails', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch((err) => {
+      return err
+    })
+  }
 
   async getDetailsOfPatient(id: any): Promise<CloudAppResponse<any>> {
     return await fetch(api.hostURL + `/api/Doctors/getDetailsOfPatient?id=` + id, {

@@ -123,7 +123,7 @@ export class Home extends React.Component<Props, State> {
         description: '',
         dateAndTime: new Date().toISOString(),
         doctorAccountId: '',
-        patientAccountId: ''
+        patientAccountId: api.tokenDetails.a
     }
     tempPersonDetails: Doctor = {
         specialiazation: [],
@@ -143,7 +143,7 @@ export class Home extends React.Component<Props, State> {
         var tokenDetails = localStorage.getItem('tokenDetails');
         if (tokenDetails) {
             this.setState({ tokenDetails: api.tokenDetails }, () => {
-                console.log('props', this.state.tokenDetails, api.tokenDetails)
+                // console.log('props', this.state.tokenDetails, api.tokenDetails)
                 if (this.state.tokenDetails.admin) {
                     this.getAllPatient();
                 }
@@ -170,7 +170,7 @@ export class Home extends React.Component<Props, State> {
     getAllPatient() {
         console.log("xxxxxxx patient")
         api.getAllPatients().then((data) => {
-            console.log("xxxxxxx patient", data)
+            // console.log("xxxxxxx patient", data)
             var docs = this.state.filteredDoctors;
             // this.setState({ doctors: data.data }, () => {
             //     this.setState({ filteredDoctors: this.state.doctors });
@@ -226,6 +226,9 @@ export class Home extends React.Component<Props, State> {
             reader.onload = () => resolve(reader.result);
             reader.onerror = error => reject(error);
         });
+    }
+    setMyStates = () => {
+
     }
     render() {
 
@@ -288,7 +291,7 @@ export class Home extends React.Component<Props, State> {
                                         this.ddYYMM = new Date(e.target.value);
                                     }} />
                                     <Input type={'time'} onChange={(e) => {
-                                        console.log(e.target.value);
+                                        //console.log(e.target.value);
                                         var minAndSeconds = e.target.value.split(':');
                                         var min = new Date(this.ddYYMM).setHours(parseInt(minAndSeconds[0]));
                                         var sec = new Date(this.ddYYMM).setMinutes(parseInt(minAndSeconds[1]));
@@ -303,9 +306,10 @@ export class Home extends React.Component<Props, State> {
                                     <span>{this.state.message}</span>
                                 </div> : null}
                                 <Button text={'Submit'} onClick={() => {
-                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, patientAccountId: api.loggedUserInfo.accountId } });
+                                    console.log(this.state.tokenDetails.a);
                                     this.setState({ appointmentDetails: { ...this.state.appointmentDetails, dateAndTime: this.ddYYMM.toISOString() } });
                                     this.setState({ appointmentDetails: { ...this.state.appointmentDetails, doctorAccountId: this.state.doctor.userId } });
+                                    this.setState({ appointmentDetails: { ...this.state.appointmentDetails, patientAccountId: this.state.tokenDetails.a } });
                                     api.makeAppointment(this.state.appointmentDetails, succes => {
                                         this.setState({ status: succes.status }, () => {
                                             if (this.state.status) {
@@ -367,7 +371,7 @@ export class Home extends React.Component<Props, State> {
                                     this.getBase64(e.target.files[0]).then((data) => {
                                         var img: any = data;
                                         if (data !== 'error') {
-                                            console.log(img);
+                                            //console.log(img);
                                             this.setState({ oldDoctorDetails: { ...this.state.oldDoctorDetails, picture: img } });
                                         }
                                     });
@@ -386,7 +390,7 @@ export class Home extends React.Component<Props, State> {
                                     </div>
                                     : null}
                                 <Button style={{ width: '102%' }} text='Submit' onClick={() => {
-                                    console.log(this.state.oldDoctorDetails)
+                                    //console.log(this.state.oldDoctorDetails)
                                     api.updateDetailsDoctor(this.state.oldDoctorDetails, (success) => {
                                         console.log("details", success);
                                         this.setState({ status: success.status }, () => {
@@ -407,15 +411,18 @@ export class Home extends React.Component<Props, State> {
                             {(this.state.doctors) ?
                                 <table>
                                     <thead>
-                                        <th></th>
-                                        <th>Name</th>
-                                        <th>Surname</th>
-                                        <th>Specialiazation</th>
-                                        {(api.tokenDetails.admin) ? <th>Delete || Edit</th> : null}
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Surname</th>
+                                            <th>Specialiazation</th>
+                                            {(api.tokenDetails.admin) ? <th>Delete || Edit</th> : null}
+                                        </tr>
+
                                     </thead>
                                     <tbody>
                                         {(this.state.doctors.map((data, i) => {
-                                            console.log(data)
+                                            //console.log(data)
                                             return <tr key={i + JSON.stringify(data)}>
                                                 <td onClick={() => {
                                                     this.setDoctorToBook(data);
@@ -448,7 +455,7 @@ export class Home extends React.Component<Props, State> {
                                                     <FontAwesomeIcon style={{ zIndex: 99 }} icon={faPen} onClick={() => {
                                                         api.getDetailsDoctor(data.userId).then((res: any) => {
                                                             this.setState({ oldDoctorDetails: res.data }, () => {
-                                                                console.log(this.state.oldDoctorDetails)
+                                                                // console.log(this.state.oldDoctorDetails)
                                                                 this.setState({ onUpdateDoctorDetails: true });
                                                             })
                                                         })
