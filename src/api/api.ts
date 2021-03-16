@@ -311,7 +311,10 @@ export class API extends EventEmitter {
     error: (error?: any) => void) {
     const requestOptions = {
       method: 'POST',
-      headers: this.headers,
+      headers: {
+        Authorization: 'Bearer ' + this.bearerToken,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(doctorToAdd) //JSON.Parse
     };
     const url = this.hostURL + '/api/Doctors/create';
