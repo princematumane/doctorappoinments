@@ -31,6 +31,12 @@ export function validEmailAddress(email: string): boolean {
     return regexp.test(email);
 }
 
+export function validateStrongPassowrd(password: string): boolean {
+    const passwordExpression = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$";
+    var regexp = new RegExp(passwordExpression);
+    return regexp.test(password);
+}
+
 function isNumber(n: any) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }

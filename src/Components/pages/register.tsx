@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { Patient } from '../../api/model/Interface';
-import { ValidateIdNumber, ValidateSouthAfricanPhonenumber, validEmailAddress } from '../../helpers';
+import { ValidateIdNumber, ValidateSouthAfricanPhonenumber, validateStrongPassowrd, validEmailAddress } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -137,8 +137,8 @@ export class Register extends React.Component {
                 fieldValidationErrors.email = emailValid ? '' : ' is invalid';
                 break;
             case 'password':
-                passwordValid = value.length >= 5;
-                fieldValidationErrors.password = passwordValid ? '' : ' is too short';
+                passwordValid = validateStrongPassowrd(value);
+                fieldValidationErrors.password = passwordValid ? '' : 'Password strength does not match criteria';
                 break;
             case 'confirmPassword':
                 confirmPasswordValid = value.length >= 5 && this.state.personDetails.password == value;
