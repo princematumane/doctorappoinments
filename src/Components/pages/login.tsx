@@ -125,7 +125,7 @@ export class Login extends React.Component {
 
                 <div className="loginAndRegister">
                     <Button text='Login' onClick={() => {
-                        if (this.state.isPasswordValid && this.state.isValid && this.state.password != '' && this.state.username != '') {
+                        if (true) {
                             api.Login(this.state.username, this.state.password).then((response: any) => {
                                 this.setState({ status: response.status }, () => {
                                     this.setState({ message: response.message });

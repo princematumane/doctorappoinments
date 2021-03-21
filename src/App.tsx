@@ -12,8 +12,8 @@ import { Register } from "./Components/pages/register";
 import { api } from "./api/api";
 import { AddDoctor } from "./Components/pages/addDoctor";
 import { EditPatientFile } from "./Components/pages/editPatientFile";
-import Reports from "./Components/pages/reports";
 import { ManagePatients } from "./Components/pages/managePatients";
+import Reports from "./Components/pages/reports";
 
 interface Props { }
 interface State {

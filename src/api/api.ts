@@ -7,7 +7,8 @@ import jwt_decode from "jwt-decode";
 
 
 export class API extends EventEmitter {
-  hostURL: string = "https://doctorappoinmentsapi20210218230626.azurewebsites.net";
+  // hostURL: string = "https://doctorappoinmentsapi20210218230626.azurewebsites.net";
+  hostURL: string = "https://localhost:5001";
   bearerToken: string = "";
   headers: any = { 'Content-Type': 'application/json' };
 
@@ -88,6 +89,23 @@ export class API extends EventEmitter {
       return err
     })
   }
+  //getAllAppointments
+
+  async getAllAppointments(): Promise<CloudAppResponse<any>> {
+    console.log(this.bearerToken);
+    return await fetch(api.hostURL + '/api/Doctors/getAllAppointments', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + this.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      // console.log(data);
+      return data
+    }).catch((err) => {
+      return err
+    })
+  }
 
   async getAllPatients(): Promise<CloudAppResponse<any>> {
     return await fetch(api.hostURL + '/api/Patient/getAll', {
@@ -106,6 +124,8 @@ export class API extends EventEmitter {
   makeAppointment(appointment: Appointment,
     success: (success?: any) => void,
     error: (error?: any) => void) {
+    appointment.patientAccountId = this.loggedUserInfo.accountId;
+    console.log(JSON.stringify(appointment));
     const requestOptions = {
       method: 'POST',
       //  headers: this.headers,

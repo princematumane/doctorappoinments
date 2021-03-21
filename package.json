@@ -17,6 +17,7 @@
     "jwt-decode": "^3.1.2",
     "react": "^17.0.1",
     "react-color": "^2.19.3",
+    "react-csv": "^2.0.3",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
     "react-router-dom": "^5.2.0",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/react-color": "^3.0.4",
+    "@types/react-csv": "^1.1.1",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
     "styled-components": "^5.2.1"
