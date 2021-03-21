@@ -290,7 +290,7 @@ export class Home extends React.Component<Props, State> {
                                     <Input type={'date'} min={today} onChange={(e) => {
                                         this.ddYYMM = new Date(e.target.value);
                                     }} />
-                                    <Input type={'time'} onChange={(e) => {
+                                    <Input type={'time'} min="07:00" max="15:00" onChange={(e) => {
                                         //console.log(e.target.value);
                                         var minAndSeconds = e.target.value.split(':');
                                         var min = new Date(this.ddYYMM).setHours(parseInt(minAndSeconds[0]));

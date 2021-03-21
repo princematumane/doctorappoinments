@@ -253,17 +253,6 @@ export class EditPatientFile extends React.Component {
                         <span style={{ color: 'white' }}>{this.state.message}</span>
                     </div>
                     : null}
-                <Button style={{ width: '102%' }} text='Update' onClick={() => {
-                    api.updateDetailsPatient(this.state.personDetails, (success) => {
-                        this.setState({ status: success.status }, () => {
-                            this.setState({ message: success.message })
-                            if (this.state.status) {
-                                window.location.href = "/";
-                            }
-                        })
-
-                    }, err => { })
-                }} />
                 {(this.state.areRequiremetsMet == '') ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
 
