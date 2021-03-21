@@ -148,7 +148,7 @@ export default class Reports extends React.Component<Props, State> {
                         var dd: any[] = [];
                         dd[0] = ["Doctor Name", "Patient Name", "Status", "Description", "Date"];
                         this.state.appointments.map((data, index) => {
-                            dd[index + 1] = [data.doctorDetails.name, data.patientDetails.name, data.confirmed, data.description, data.dateAndTime]
+                            dd[index + 1] = [data.doctorDetails.name, data.patientDetails.name, data.confirmed, data.description, dateArranger(data.dateAndTime)]
                         })
                         this.setState({ csvData: dd }, () => {
                             console.log(this.state.csvData);
