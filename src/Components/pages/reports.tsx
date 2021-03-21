@@ -9,7 +9,8 @@ import { CSVLink, CSVDownload } from "react-csv";
 
 interface State {
     appointments: any[],
-    filteredAppointments: any[]
+    filteredAppointments: any[],
+    csvData: any[]
 }
 
 interface Props {
@@ -84,7 +85,8 @@ export default class Reports extends React.Component<Props, State> {
 
     state: State = {
         appointments: [],
-        filteredAppointments: []
+        filteredAppointments: [],
+        csvData: []
     }
     componentDidMount() {
         console.log(window.location.href)
@@ -136,19 +138,19 @@ export default class Reports extends React.Component<Props, State> {
         return filteredData;
     }
     render() {
-        const csvData = [
-            ["firstname", "lastname", "email"],
-            ["Ahmed", "Tomi", "ah@smthing.co.com"],
-            ["Raed", "Labes", "rl@smthing.co.com"],
-            ["Yezzi", "Min l3b", "ymin@cocococo.com"]
-        ];
         return (
             <Maincontainter>
                 <div className="center">
 
-                    <div style={{ marginLeft: 20 }}>
+                    <div style={{ marginLeft: 20 }} onClick={() => {
+                        var dd: any[] = [];
+                        dd[0] = ["Doctor Name", "Patient Name", "Status", "Description", "Date"]
+                        this.state.appointments.map((data, index) => {
+                            // dd.push({data.doctorDetails.name})
+                        })
+                    }}>
                         {/* <Button text="Export CSV" /> */}
-                        <CSVLink data={csvData}>Export CSV</CSVLink>
+                        {/* <CSVLink data={csvData}>Export CSV</CSVLink> */}
                     </div>
                     <div className="searchSection">
                         <div className={"filterSection"}>

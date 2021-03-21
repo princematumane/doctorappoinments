@@ -7,8 +7,8 @@ import jwt_decode from "jwt-decode";
 
 
 export class API extends EventEmitter {
-  // hostURL: string = "https://doctorappoinmentsapi20210218230626.azurewebsites.net";
-  hostURL: string = "https://localhost:5001";
+  hostURL: string = "https://doctorappoinmentsapi20210321201458.azurewebsites.net/";
+  //hostURL: string = "https://localhost:5001";
   bearerToken: string = "";
   headers: any = { 'Content-Type': 'application/json' };
 
