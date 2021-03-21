@@ -303,7 +303,7 @@ export class ManagePatients extends React.Component<Props, State> {
 
                         : null}
                     <div className={"membersListing"}>
-                        <div style={{ display: 'block', width: '100%', overflow: 'auto', height: 420 }}>
+                        <div style={{ display: 'block', width: '100%', overflow: 'auto', height: 350 }}>
                             {(this.state.patients) ?
                                 <table>
                                     <thead>
