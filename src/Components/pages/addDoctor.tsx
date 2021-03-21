@@ -63,7 +63,7 @@ interface State {
     pictureValid: boolean,
     confirmPasswordValid: boolean,
     formErrors: any,
-    areRequiremetsMet: boolean
+    areRequiremetsMet: string
 }
 
 
@@ -97,7 +97,7 @@ export class AddDoctor extends React.Component {
         phoneNumberValid: false,
         pictureValid: false,
         confirmPasswordValid: false,
-        areRequiremetsMet: false,
+        areRequiremetsMet: '',
         formErrors: {
             address: "",
             email: "",
@@ -290,38 +290,11 @@ export class AddDoctor extends React.Component {
 
                 <Button style={{ width: '102%' }} text='Submit' onClick={() => {
                     Object.keys(this.state.formErrors).map((fieldName, i) => {
-                        if (this.state.formErrors[fieldName].length > 0) {
-                            this.setState({ status: false }, () => {
-                                this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
-                            })
-                            this.setState({ areRequiremetsMet: false })
+                        if (this.state.formErrors[fieldName].length <= 2) {
+                            this.setState({ areRequiremetsMet: 'true' })
                         }
                     })
-                    console.log(this.state.personDetails)
-                    api.AddDoctor(this.state.personDetails, (success) => {
-                        console.log(success);
-                        this.setState({ status: success.status }, () => {
-                            this.setState({ message: success.message })
-                            if (this.state.status) {
-                                window.location.href = "/home";
-                            }
-                        })
-
-                    }, err => { })
-                }} />
-
-                {/* {(!this.state.areRequiremetsMet) ?
-                    <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
-                    <Button style={{ width: '102%' }} text='Submit' onClick={() => {
-                        Object.keys(this.state.formErrors).map((fieldName, i) => {
-                            if (this.state.formErrors[fieldName].length > 0) {
-                                this.setState({ status: false }, () => {
-                                    this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
-                                })
-                                this.setState({ areRequiremetsMet: false })
-                            }
-                        })
-                        console.log(this.state.personDetails)
+                    if (this.state.areRequiremetsMet == 'true') {
                         api.AddDoctor(this.state.personDetails, (success) => {
                             console.log(success);
                             this.setState({ status: success.status }, () => {
@@ -330,10 +303,10 @@ export class AddDoctor extends React.Component {
                                     window.location.href = "/home";
                                 }
                             })
-
                         }, err => { })
-                    }} />} */}
+                    }
 
+                }} />
             </>
         );
     }

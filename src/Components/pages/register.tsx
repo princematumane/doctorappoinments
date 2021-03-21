@@ -63,7 +63,7 @@ interface State {
     pictureValid: boolean,
     confirmPasswordValid: boolean,
     formErrors: any,
-    areRequiremetsMet: boolean
+    areRequiremetsMet: string
 }
 
 
@@ -95,7 +95,7 @@ export class Register extends React.Component {
         phoneNumberValid: false,
         pictureValid: false,
         confirmPasswordValid: false,
-        areRequiremetsMet: false,
+        areRequiremetsMet: '',
         formErrors: {
             address: "",
             email: "",
@@ -201,6 +201,7 @@ export class Register extends React.Component {
                     <span style={{ fontSize: 10, padding: 10, color: 'red' }}>
                         {Object.keys(this.state.formErrors).map((fieldName, i) => {
                             if (this.state.formErrors[fieldName].length > 0) {
+                                this.setState({ areRequiremetsMet: 'false' })
                                 return (
                                     <p key={i}>{fieldName} {this.state.formErrors[fieldName]}</p>
                                 )
@@ -242,48 +243,15 @@ export class Register extends React.Component {
                     </div>
                     : null}
 
-
-
-
-
-                <Button disabled={this.state.areRequiremetsMet} style={{ width: '102%' }} text='Create File' onClick={() => {
-                    Object.keys(this.state.formErrors).map((fieldName, i) => {
-                        if (this.state.formErrors[fieldName].length > 0) {
-                            this.setState({ status: false }, () => {
-                                this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
-                            })
-                            this.setState({ areRequiremetsMet: false })
-                        }
-                    })
-                    if (true) {
-                        api.AddPatient(this.state.personDetails, (success) => {
-                            console.log(success);
-                            this.setState({ status: success.status }, () => {
-                                this.setState({ message: success.message })
-                                if (this.state.status) {
-                                    window.location.href = "/login";
-                                }
-                            })
-
-                        }, err => { })
-                    }
-
-
-                }} />
-
-                {/* {(!this.state.areRequiremetsMet) ?
+                {(this.state.areRequiremetsMet == '') ?
                     <p style={{ fontSize: 10, color: theme8bo.brandSpot }}>Submit button will appear if/after all the requirements of the form are met !!</p> :
-
-                    <Button disabled={!this.state.areRequiremetsMet} style={{ width: '102%' }} text='Create File' onClick={() => {
+                    <Button style={{ width: '102%' }} text='Create File' onClick={() => {
                         Object.keys(this.state.formErrors).map((fieldName, i) => {
-                            if (this.state.formErrors[fieldName].length > 0) {
-                                this.setState({ status: false }, () => {
-                                    this.setState({ message: this.state.formErrors[fieldName] + " Requirements are not fully met" })
-                                })
-                                this.setState({ areRequiremetsMet: false })
+                            if (this.state.formErrors[fieldName].length <= 2) {
+                                this.setState({ areRequiremetsMet: 'true' })
                             }
                         })
-                        if (this.state.areRequiremetsMet) {
+                        if (this.state.areRequiremetsMet == 'true') {
                             api.AddPatient(this.state.personDetails, (success) => {
                                 console.log(success);
                                 this.setState({ status: success.status }, () => {
@@ -297,7 +265,7 @@ export class Register extends React.Component {
                         }
 
 
-                    }} />} */}
+                    }} />}
 
             </div>
         );
