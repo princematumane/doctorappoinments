@@ -10,7 +10,8 @@ import { CSVLink, CSVDownload } from "react-csv";
 interface State {
     appointments: any[],
     filteredAppointments: any[],
-    csvData: any[]
+    csvData: any[],
+    isMakingCsv: boolean
 }
 
 interface Props {
@@ -86,7 +87,8 @@ export default class Reports extends React.Component<Props, State> {
     state: State = {
         appointments: [],
         filteredAppointments: [],
-        csvData: []
+        csvData: [],
+        isMakingCsv: false
     }
     componentDidMount() {
         console.log(window.location.href)
@@ -144,13 +146,19 @@ export default class Reports extends React.Component<Props, State> {
 
                     <div style={{ marginLeft: 20 }} onClick={() => {
                         var dd: any[] = [];
-                        dd[0] = ["Doctor Name", "Patient Name", "Status", "Description", "Date"]
+                        dd[0] = ["Doctor Name", "Patient Name", "Status", "Description", "Date"];
                         this.state.appointments.map((data, index) => {
-                            // dd.push({data.doctorDetails.name})
+                            dd[index + 1] = [data.doctorDetails.name, data.patientDetails.name, data.confirmed, data.description, data.dateAndTime]
                         })
+                        this.setState({ csvData: dd }, () => {
+                            console.log(this.state.csvData);
+                            this.setState({ isMakingCsv: true })
+                        });
                     }}>
+                        click me to get csv ready
                         {/* <Button text="Export CSV" /> */}
-                        {/* <CSVLink data={csvData}>Export CSV</CSVLink> */}
+                        {(this.state.isMakingCsv) ? <CSVLink data={this.state.csvData}>Export CSV</CSVLink> : null}
+
                     </div>
                     <div className="searchSection">
                         <div className={"filterSection"}>
@@ -192,7 +200,7 @@ export default class Reports extends React.Component<Props, State> {
                                     </thead>
                                     <tbody>
                                         {(this.state.appointments.map((data: any, i) => {
-                                            console.log(data)
+                                            //console.log(data)
                                             return <tr key={i + JSON.stringify(data)}>
                                                 <td onClick={() => {
                                                     // this.setDoctorToBook(data);
