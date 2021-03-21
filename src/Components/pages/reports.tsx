@@ -144,7 +144,7 @@ export default class Reports extends React.Component<Props, State> {
             <Maincontainter>
                 <div className="center">
 
-                    <div style={{ marginLeft: 20 }} onClick={() => {
+                    <Button text={'Make CSV'} style={{ marginLeft: 20 }} onClick={() => {
                         var dd: any[] = [];
                         dd[0] = ["Doctor Name", "Patient Name", "Status", "Description", "Date"];
                         this.state.appointments.map((data, index) => {
@@ -154,12 +154,11 @@ export default class Reports extends React.Component<Props, State> {
                             console.log(this.state.csvData);
                             this.setState({ isMakingCsv: true })
                         });
-                    }}>
-                        click me to get csv ready
-                        {/* <Button text="Export CSV" /> */}
-                        {(this.state.isMakingCsv) ? <CSVLink data={this.state.csvData}>Export CSV</CSVLink> : null}
+                    }} />
 
-                    </div>
+                    {(this.state.isMakingCsv) ? <CSVLink data={this.state.csvData}> Export CSV</CSVLink> : null}
+
+
                     <div className="searchSection">
                         <div className={"filterSection"}>
                             <span>Doctor Name</span>
