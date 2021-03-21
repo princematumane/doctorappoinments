@@ -146,6 +146,10 @@ export default class Reports extends React.Component<Props, State> {
             <Maincontainter>
                 <div className="center">
 
+                    <div style={{ marginLeft: 20 }}>
+                        {/* <Button text="Export CSV" /> */}
+                        <CSVLink data={csvData}>Export CSV</CSVLink>
+                    </div>
                     <div className="searchSection">
                         <div className={"filterSection"}>
                             <span>Doctor Name</span>
@@ -202,10 +206,6 @@ export default class Reports extends React.Component<Props, State> {
                                 </table>
                                 : <span>No Patients</span>}
                         </div>
-                    </div>
-                    <div className="">
-                        {/* <Button text="Export CSV" /> */}
-                        <CSVLink data={csvData}>Export CSV</CSVLink>
                     </div>
                 </div>
             </Maincontainter>
