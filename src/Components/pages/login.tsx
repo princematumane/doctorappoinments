@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { api } from '../../api/api';
 import { userInfo } from '../../api/model/Interface';
-import { ValidateIdNumber } from '../../helpers';
+import { ValidateIdNumber, validateStrongPassowrd } from '../../helpers';
 import { theme8bo } from '../../themes';
 import { Button } from '../dashboard/button';
 import { Input } from '../dashboard/input';
@@ -108,7 +108,8 @@ export class Login extends React.Component {
                 {(this.state.isValidMessage != '') ? <> <span style={{ fontSize: 10, padding: 10, color: 'red' }}>{this.state.isValidMessage}</span><br /></> : null}
                 <span>Password</span>
                 <Input type={'password'} onChange={(e) => {
-                    if (e.target.value.length < 5) {
+                    var isValid = validateStrongPassowrd(e.target.value);
+                    if (!isValid) {
                         this.setState({ isPasswordValid: false })
                     } else {
                         this.setState({ isPasswordValid: true })
@@ -125,7 +126,7 @@ export class Login extends React.Component {
 
                 <div className="loginAndRegister">
                     <Button text='Login' onClick={() => {
-                        if (true) {
+                        if (this.state.isPasswordValid && this.state.isValidMessage == '') {
                             api.Login(this.state.username, this.state.password).then((response: any) => {
                                 this.setState({ status: response.status }, () => {
                                     this.setState({ message: response.message });
