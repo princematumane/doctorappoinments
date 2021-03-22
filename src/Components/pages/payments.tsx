@@ -52,7 +52,7 @@ export default class Payments extends React.Component {
         return (
             <Maincontainter>
                 <div className="center">
-                    <StartCards />
+                    <StartCards appId={this.state.appId} />
                 </div>
             </Maincontainter>
         );

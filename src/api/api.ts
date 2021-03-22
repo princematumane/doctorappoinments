@@ -165,6 +165,20 @@ export class API extends EventEmitter {
     })
   }
 
+
+  async getMyAppointment(appId: string): Promise<CloudAppResponse<any>> {
+    return await fetch(api.hostURL + `/api/Patient/getMyAppointment?appId=${appId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch((err) => {
+      return err
+    })
+  }
   //appointment doctor 
 
   async getMyAppointmentsDoctor(): Promise<CloudAppResponse<any>> {

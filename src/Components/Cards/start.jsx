@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import Styles from './Styles'
 import { Form, Field } from 'react-final-form'
 import Card from './Card'
-//import { api } from "./api/api";
+import { api } from "../../api/api";
 import {
     formatCreditCardNumber,
     formatCVC,
@@ -14,10 +14,11 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const onSubmit = async values => {
     await sleep(300)
-    window.alert(JSON.stringify(values, 0, 2))
+    // window.alert(JSON.stringify(values, 0, 2))
 }
 
-export const StartCards = () => {
+export const StartCards = (data) => {
+    console.log('in pay ', data.appId);
     return (
         <Styles>
             <Form
@@ -76,14 +77,27 @@ export const StartCards = () => {
                                 />
                             </div>
                             <div className="buttons">
-                                <button type="submit" disabled={submitting}>
+                                <button onClick={() => {
+                                    api.getMyAppointment(data.appId).then((res) => {
+                                        console.log(res.message)
+                                        if (res.status) {
+                                            api.UpdateAppointment(data.appId, res.data.payments.totalCos, 'paid').then((res) => {
+                                                if (res.status) {
+                                                    alert(res.message)
+                                                } else {
+                                                    alert(`Failed while making payments${res.message}`)
+                                                }
+                                            })
+                                        } else {
+                                            alert(`Failed while trying to get message ${res.message}`)
+                                        }
+                                    })
+                                }} type="submit" disabled={submitting}>
                                     Submit
               </button>
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        //api.UpdateAppointment('', '').then((res) => { })
-                                    }}
+                                    onClick={form.reset}
                                     disabled={submitting || pristine}
                                 >
                                     Reset
