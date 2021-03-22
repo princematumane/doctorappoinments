@@ -2,6 +2,7 @@
 import * as React from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
 import styled from 'styled-components';
+import { api } from '../../api/api';
 import { StartCards } from '../Cards/start';
 const Maincontainter = styled.div`
 height: 100%;
@@ -34,6 +35,12 @@ width: 100%;
     }
 `;
 export default class Payments extends React.Component {
+    componentDidMount() {
+        document.title = 'Payments ';
+        const url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        console.log('xxx in manage paymenta', id);
+    }
     render() {
         return (
             <Maincontainter>

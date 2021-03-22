@@ -10,7 +10,10 @@ export class API extends EventEmitter {
   hostURL: string = "https://doctorappoinmentsapi20210321201458.azurewebsites.net/";
   //hostURL: string = "https://localhost:5001";
   bearerToken: string = "";
-  headers: any = { 'Content-Type': 'application/json' };
+  headers: any = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  };
 
   tempLoggedUserInfo = {
     name: "",

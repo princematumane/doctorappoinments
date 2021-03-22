@@ -346,6 +346,13 @@ export class Navbar extends React.Component<Props, State> {
                             window.location.href = '/editFile/' + this.state.tokenDetails.a;
                         }} />
                         : null}
+
+                    {(this.state.tokenDetails.isDoctor) ?
+                        <MenuItemObject icon='fas fa-user' title='Manage Appointments' onClick={() => {
+                            window.location.href = '/manageAppointments';
+                        }} />
+                        : null}
+
                     {(this.state.tokenDetails.admin) ? <>
                         <MenuItemObject icon='fas fa-user' title='Add Doctor' onClick={() => {
                             window.location.href = '/addDoctor';
@@ -426,6 +433,11 @@ export class Navbar extends React.Component<Props, State> {
                                                         </div>
                                                     }
                                                     <span style={{ fontWeight: 'bold' }}>Appointment Status : {data.confirmed}</span>
+                                                    {(!this.state.tokenDetails.isDoctor && !this.state.tokenDetails.admin) ?
+                                                        <Button text={'make payment'} onClick={() => {
+                                                            window.location.href = "/payments/" + data.appId;
+                                                        }} />
+                                                        : null}
                                                     {(this.state.tokenDetails.isDoctor && data.confirmed == 'Waiting') ? <div style={{ display: 'inline' }}>
                                                         <div className={'action'} onClick={() => {
                                                             api.confirmAppointment(data.appId, true).then((d) => {
