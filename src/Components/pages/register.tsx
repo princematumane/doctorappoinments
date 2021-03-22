@@ -115,6 +115,9 @@ export class Register extends React.Component {
 
     }
     handleUserInput(e: any) {
+        if (this.state.areRequiremetsMet == '') {
+            this.setState({ areRequiremetsMet: 'false' })
+        }
         const name = e.target.name;
         const value = e.target.value;
         this.setState({ personDetails: { ...this.state.personDetails, [name]: value } }, () => {
@@ -196,12 +199,10 @@ export class Register extends React.Component {
                     <FontAwesomeIcon icon={faArrowCircleLeft} /> Back
                 </div>
                 <h1 style={{ textAlign: 'center' }}>Create your file</h1>
-
                 <div className='formErrors'>
                     <span style={{ fontSize: 10, padding: 10, color: 'red' }}>
                         {Object.keys(this.state.formErrors).map((fieldName, i) => {
                             if (this.state.formErrors[fieldName].length > 0) {
-                                this.setState({ areRequiremetsMet: 'false' })
                                 return (
                                     <p key={i}>{fieldName} {this.state.formErrors[fieldName]}</p>
                                 )

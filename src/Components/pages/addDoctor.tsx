@@ -142,6 +142,9 @@ export class AddDoctor extends React.Component {
 
 
     handleUserInput(e: any) {
+        if (this.state.areRequiremetsMet == '') {
+            this.setState({ areRequiremetsMet: 'false' })
+        }
         const name = e.target.name;
         const value = e.target.value;
         this.setState({ personDetails: { ...this.state.personDetails, [name]: value } }, () => {
