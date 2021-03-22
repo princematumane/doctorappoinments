@@ -180,6 +180,24 @@ export class API extends EventEmitter {
       return err
     })
   }
+  ///api/Doctors/UpdateAppointment?appId=ertgty&price=ewrtr&status=ertr
+  async UpdateAppointment(appId: string, price: string, status?: string): Promise<any> {
+    var fulUrl = api.hostURL + `/api/Doctors/UpdateAppointment?appId=${appId}&price=${price}`;
+    if (status) {
+      fulUrl += `&status=${status}`
+    }
+    return await fetch(fulUrl, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch(err => {
+      return err
+    })
+  }
   async confirmAppointment(appId: string, isConfirmed: boolean): Promise<any> {
     return await fetch(api.hostURL + `/api/Doctors/confirmAppointment?appId=${appId}&status=${isConfirmed}`, {
       method: 'PATCH',
@@ -220,6 +238,19 @@ export class API extends EventEmitter {
     })
   }
 
+  async DeleteAppointment(id: any): Promise<CloudAppResponse<any>> {
+    return await fetch(api.hostURL + `/api/Doctors/deleteAppointment?id=` + id, {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch(err => {
+      return err
+    })
+  }
   async getDetailsOfPatient(id: any): Promise<CloudAppResponse<any>> {
     return await fetch(api.hostURL + `/api/Doctors/getDetailsOfPatient?id=` + id, {
       method: 'GET',

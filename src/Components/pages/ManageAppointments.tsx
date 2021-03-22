@@ -81,7 +81,9 @@ interface State {
     patientDetails: any,
     appointmentToManage: any,
     appStatus: string,
-    pricesAndDescriptions: any[]
+    totalPrice: string,
+    status: boolean,
+    message: string
 }
 
 export interface DropdownInterface {
@@ -89,7 +91,7 @@ export interface DropdownInterface {
     option: string
 }
 const appointmentStatus: DropdownInterface[] = [
-    { option: 'Confirmed', value: 'Confirmed' }, { option: 'Waiting', value: 'Waiting' }, { option: 'Declined', value: 'Declined' }
+    { option: 'Confirmed', value: 'Confirmed' }, { option: 'Declined', value: 'Declined' }
 ]
 export default class ManageAppointments extends React.Component {
 
@@ -99,7 +101,9 @@ export default class ManageAppointments extends React.Component {
         patientDetails: "",
         appointmentToManage: "",
         appStatus: "Unknown",
-        pricesAndDescriptions: []
+        totalPrice: '',
+        status: false,
+        message: ''
     }
     componentDidMount() {
         document.title = 'Manage Appointments';
@@ -115,17 +119,25 @@ export default class ManageAppointments extends React.Component {
     }
 
     render() {
+
+        if (this.state.message != '') {
+            setTimeout(() => {
+                this.setState({ message: '' });
+                this.setState({ status: false });
+            }, 3000)
+        }
         return (
             <Maincontainter>
                 <div className="center">
 
                     {(this.state.isManagingAppointment) ?
-                        <Modal title={"Manage appoitntment with " + this.state.appointmentToManage.patientDetails.name + ' [ ' + this.state.appStatus + ' ]'} id={api.tokenDetails.a} isOpen={this.state.isManagingAppointment} onChange={() => { }}>
-                            <span>Prescription </span>
-                            <Input placeholder={' '} onChange={(e: any) => {
-                                let sp = e.target.value.split(',');
-                            }} /><br />
+                        <Modal title={"Manage appointment with " + this.state.appointmentToManage.patientDetails.name + ' [ ' + this.state.appStatus + ' ]'} id={api.tokenDetails.a} isOpen={this.state.isManagingAppointment} onChange={() => { }}>
+                            <span>Appointment Description </span><br />
+                            <textarea disabled={true} value={this.state.appointmentToManage.description}
+                                style={{ width: '784px', height: '171px' }}></textarea>
+
                             <Input placeholder={'Total price'} onChange={(e: any) => {
+                                this.setState({ totalPrice: e.target.value })
                                 let sp = e.target.value.split(',');
                             }} />
                             <span>Update Status</span><br />
@@ -133,8 +145,17 @@ export default class ManageAppointments extends React.Component {
                                 this.setState({ appStatus: data })
                             }} />
 
+                            {(this.state.message != '') ? <span style={{ color: (this.state.status) ? 'green' : 'red' }}>
+                                {this.state.message}
+                            </span> : null}
                             <Button text={'Submit'} onClick={() => {
-                                //window.location.href = '/payments/' + this.state.appointmentToManage.appId;
+                                api.UpdateAppointment(this.state.appointmentToManage.appId,
+                                    this.state.totalPrice).then((res) => {
+                                        this.setState({ message: res.message });
+                                        this.setState({ status: res.status });
+                                        // setTimeout(())
+                                        // this.setState({ isManagingAppointment: !this.state.isManagingAppointment })
+                                    })
                             }} />
                         </Modal> : null}
                     <div className={"membersListing"}>
@@ -146,6 +167,7 @@ export default class ManageAppointments extends React.Component {
                                         <th>Date and time</th>
                                         <th>Status</th>
                                         <th>Description</th>
+                                        <th>Fee</th>
                                     </thead>
                                     <tbody>
                                         {(this.state.apppointments.map((data, i) => {
@@ -160,6 +182,9 @@ export default class ManageAppointments extends React.Component {
                                                 <td>{dateArranger(data.dateAndTime)}</td>
                                                 <td>{data.confirmed}</td>
                                                 <td>{data.description}</td>
+                                                {(data.payments) ?
+                                                    <td>{data.payments ? data.payments.status : 'Outstanding'}</td>
+                                                    : <td>No Payment Info</td>}
                                             </tr>
                                         }))}
                                     </tbody>

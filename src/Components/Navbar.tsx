@@ -8,7 +8,7 @@ import { lightTheme, theme8bo } from '../themes';
 import { UserInfo } from 'os';
 import { myAppointment } from './dashboard/interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCheck, faPowerOff, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheck, faPowerOff, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { dateArranger } from '../helpers';
 import { MenuItemObject } from './menuitem';
 interface State {
@@ -422,6 +422,15 @@ export class Navbar extends React.Component<Props, State> {
                                         {(this.state.myAppointments.length <= 0) ? <span style={{ textAlign: 'center', color: 'red' }}>No Appointments</span> : <div>
                                             {(this.state.myAppointments.map((data, i) => {
                                                 return <div key={i} style={{ marginBottom: 5, padding: 5, borderRadius: 5, background: lightTheme.bodyAltLighter }}>
+                                                    {(this.state.tokenDetails.isDoctor || this.state.tokenDetails.admin) ?
+                                                        <div style={{ cursor: 'pointer' }} onClick={() => {
+                                                            api.DeleteAppointment(data.appId).then((res) => {
+                                                                alert(res.message)
+                                                            })
+                                                        }}>
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </div>
+                                                        : null}
                                                     {(this.state.tokenDetails.isDoctor) ?
                                                         <div>
                                                             <span> Appointment with  {data.patientDetails.name} {data.patientDetails.surname} </span><br />

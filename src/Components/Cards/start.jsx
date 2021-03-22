@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import Styles from './Styles'
 import { Form, Field } from 'react-final-form'
 import Card from './Card'
+//import { api } from "./api/api";
 import {
     formatCreditCardNumber,
     formatCVC,
@@ -80,7 +81,9 @@ export const StartCards = () => {
               </button>
                                 <button
                                     type="button"
-                                    onClick={form.reset}
+                                    onClick={() => {
+                                        //api.UpdateAppointment('', '').then((res) => { })
+                                    }}
                                     disabled={submitting || pristine}
                                 >
                                     Reset

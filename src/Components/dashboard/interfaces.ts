@@ -57,3 +57,8 @@ export interface PatientAppointed {
     phoneNumber: string,
     email: string,
 }
+
+export interface DoctorUpdateAppointment {
+    totalPrice: string,
+    status: string
+}

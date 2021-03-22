@@ -34,11 +34,18 @@ width: 100%;
         width:100%;
     }
 `;
+interface State {
+    appId: string
+}
 export default class Payments extends React.Component {
+    state: State = {
+        appId: ''
+    }
     componentDidMount() {
         document.title = 'Payments ';
         const url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
+        this.setState({ appId: id });
         console.log('xxx in manage paymenta', id);
     }
     render() {
