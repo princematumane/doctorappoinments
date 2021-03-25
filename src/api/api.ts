@@ -212,6 +212,21 @@ export class API extends EventEmitter {
       return err
     })
   }
+  ///api/Doctors/UpdateAppointment?appId=ertgty&price=ewrtr&status=ertr
+  async UpdatePayments(appId: string, price: string): Promise<any> {
+    var fulUrl = api.hostURL + `/api/Patient/Payments?id=${appId}&totalCost=${price}`;
+    return await fetch(fulUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + api.bearerToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(data => {
+      return data
+    }).catch(err => {
+      return err
+    })
+  }
   async confirmAppointment(appId: string, isConfirmed: boolean): Promise<any> {
     return await fetch(api.hostURL + `/api/Doctors/confirmAppointment?appId=${appId}&status=${isConfirmed}`, {
       method: 'PATCH',

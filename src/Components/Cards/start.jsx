@@ -81,11 +81,11 @@ export const StartCards = (data) => {
                                     api.getMyAppointment(data.appId).then((res) => {
                                         console.log(res.message)
                                         if (res.status) {
-                                            api.UpdateAppointment(data.appId, res.data.payments.totalCos, 'paid').then((res) => {
+                                            api.UpdatePayments(data.appId, res.data.payments.totalCost, 'paid').then((res) => {
                                                 if (res.status) {
                                                     alert(res.message)
                                                 } else {
-                                                    alert(`Failed while making payments${res.message}`)
+                                                    alert(`Failed while making payments ${res.message}`)
                                                 }
                                             })
                                         } else {
