@@ -1,4 +1,4 @@
-import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleLeft, faEye, faEyeSlash, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -63,7 +63,8 @@ interface State {
     pictureValid: boolean,
     confirmPasswordValid: boolean,
     formErrors: any,
-    areRequiremetsMet: string
+    areRequiremetsMet: string,
+    showPasswordDecription: boolean
 }
 
 
@@ -109,7 +110,8 @@ export class AddDoctor extends React.Component {
             picture: "",
             surname: '',
             confirmPassword: ''
-        }
+        },
+        showPasswordDecription: false
     }
     componentDidMount() {
         api.on('tokenDetails', (data: tokenDetails) => {
@@ -261,6 +263,18 @@ export class AddDoctor extends React.Component {
                 <span>Address</span>
                 <Input name='hospitalAddress' onChange={(event) => this.handleUserInput(event)} />
                 <span>Password</span>
+                <div onClick={() => {
+                    this.setState({ showPasswordDecription: !this.state.showPasswordDecription })
+                }}>
+                    <FontAwesomeIcon icon={this.state.showPasswordDecription ? faEyeSlash : faEye} />
+                    {(this.state.showPasswordDecription) ? <a style={{ color: theme8bo.bgSpot, fontSize: 10 }}>
+                        8 characters length,
+                        2 letters in Upper Case,
+                        1 Special Character (!@#$&*),
+                        2 numerals (0-9),
+                        3 letters in Lower Case,
+                    </a> : null}
+                </div>
                 <Input name='password' onChange={(event) => this.handleUserInput(event)} />
                 <span>Specialiazation</span>
                 <Input name={'Specialiazation'} placeholder={'dentist,Psychiatrist,Dermatologist'} onChange={(e: any) => {

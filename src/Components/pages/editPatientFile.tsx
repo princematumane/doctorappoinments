@@ -1,4 +1,4 @@
-import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -63,7 +63,8 @@ interface State {
     pictureValid: boolean,
     confirmPasswordValid: boolean,
     formErrors: any,
-    areRequiremetsMet: string
+    areRequiremetsMet: string,
+    showPasswordDecription: boolean
 }
 
 
@@ -107,7 +108,8 @@ export class EditPatientFile extends React.Component {
             picture: "",
             surname: '',
             confirmPassword: ''
-        }
+        },
+        showPasswordDecription: false
     }
 
 
@@ -237,6 +239,18 @@ export class EditPatientFile extends React.Component {
                 <span>Address</span>
                 <Input value={this.state.personDetails.address} name='address' onChange={(event) => this.handleUserInput(event)} />
                 <span>Password</span>
+                <div onClick={() => {
+                    this.setState({ showPasswordDecription: !this.state.showPasswordDecription })
+                }}>
+                    <FontAwesomeIcon icon={this.state.showPasswordDecription ? faEyeSlash : faEye} />
+                    {(this.state.showPasswordDecription) ? <a style={{ color: theme8bo.bgSpot, fontSize: 10 }}>
+                        8 characters length,
+                        2 letters in Upper Case,
+                        1 Special Character (!@#$&*),
+                        2 numerals (0-9),
+                        3 letters in Lower Case,
+                    </a> : null}
+                </div>
                 <Input value={this.state.personDetails.password} name='password' onChange={(event) => this.handleUserInput(event)} />
 
                 <span>confirm Password</span>
